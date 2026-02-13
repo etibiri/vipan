@@ -7,3 +7,6 @@ dependencies:
   - python=3.12
   - biopython=1.86
   - pip
+  - pandas
+  - numpy
+  - matplotlib
