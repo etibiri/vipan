@@ -37,7 +37,7 @@ rule download_genomes:
         "results/logs/download_genomes.log"
     shell:
         """
-        python scripts/fetch_splcv.py \
+        python scripts/fetch_sweepo.py \
             --email {params.email} \
             --min_len {params.min_len} \
             --max_len {params.max_len} \
