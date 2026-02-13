@@ -17,7 +17,8 @@ rule all:
         os.path.join("data", "raw", "splcv_all.fasta"),
         os.path.join("data", "raw", "splcv_metadata.tsv"),
         os.path.join("data", "processed", "splcv_clean.fasta"),
-        os.path.join("data", "processed", "splcv_final.fasta")
+        os.path.join("data", "processed", "splcv_final.fasta"),
+        os.path.join("data", "processed", "splcv_normalized.fasta")
 
 # --- Workflow Rules ---
 
@@ -87,4 +88,28 @@ rule remove_duplicates:
         python scripts/remove_duplicates.py \
             --input {input.fasta} \
             --output {output.fasta} > {log} 2>&1
+        """
+
+# --- Rotate circular rule ---
+rule normalize_genomes:
+    """
+    Step 4: Rotate circular genomes to start at the conserved nonanucleotide (TAATATTAC).
+    This ensures all sequences are in the same phase for alignment.
+    """
+    input:
+        fasta = "data/processed/splcv_final.fasta"
+    output:
+        fasta = "data/processed/splcv_normalized.fasta"
+    params:
+        motif = "TAATATTAC"
+    conda:
+        "envs/biopython.yaml"
+    log:
+        "results/logs/normalize_genomes.log"
+    shell:
+        """
+        python scripts/rotate_sequences.py \
+            --input {input.fasta} \
+            --output {output.fasta} \
+            --motif {params.motif} > {log} 2>&1
         """
