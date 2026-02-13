@@ -16,7 +16,8 @@ rule all:
     input:
         os.path.join("data", "raw", "splcv_all.fasta"),
         os.path.join("data", "raw", "splcv_metadata.tsv"),
-        os.path.join("data", "processed", "splcv_clean.fasta")
+        os.path.join("data", "processed", "splcv_clean.fasta"),
+        os.path.join("data", "processed", "splcv_final.fasta")
 
 # --- Workflow Rules ---
 
@@ -67,4 +68,23 @@ rule filter_quality:
             --output {output.fasta} \
             --max_n_pct {params.max_n}
         """
-
+# --- Fix duplicates rule ---
+rule remove_duplicates:
+    """
+    Step 3: Remove 100% identical sequences (dereplication).
+    Reduces redundancy and prevents frequency bias in the pangenome.
+    """
+    input:
+        fasta = "data/processed/splcv_clean.fasta"
+    output:
+        fasta = "data/processed/splcv_final.fasta"
+    conda:
+        "envs/biopython.yaml"
+    log:
+        "results/logs/remove_duplicates.log"
+    shell:
+        """
+        python scripts/remove_duplicates.py \
+            --input {input.fasta} \
+            --output {output.fasta} > {log} 2>&1
+        """
