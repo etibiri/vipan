@@ -15,10 +15,12 @@ configfile: "config.yaml"
 rule all:
     input:
         os.path.join("data", "raw", "splcv_all.fasta"),
-        os.path.join("data", "raw", "splcv_metadata.tsv")
+        os.path.join("data", "raw", "splcv_metadata.tsv"),
+        os.path.join("data", "processed", "splcv_clean.fasta")
 
 # --- Workflow Rules ---
 
+# --- Download sequences ---
 rule download_genomes:
     """
     Step 1: Fetch sequences and metadata from NCBI Nucleotide.
@@ -44,3 +46,25 @@ rule download_genomes:
             --fasta {output.fasta} \
             --tsv {output.metadata} > {log} 2>&1
         """
+
+# --- N quality filter ---
+rule filter_quality:
+    """
+    Step 2: Remove sequences with more than 1% of Ns to ensure pangenome quality.
+    """
+    input:
+        fasta = "data/raw/splcv_all.fasta"
+    output:
+        fasta = "data/processed/splcv_clean.fasta"
+    params:
+        max_n = 1.0  # Threshold: 1% max N
+    conda:
+        "envs/biopython.yaml"
+    shell:
+        """
+        python scripts/filter_n.py \
+            --input {input.fasta} \
+            --output {output.fasta} \
+            --max_n_pct {params.max_n}
+        """
+
