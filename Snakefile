@@ -18,7 +18,8 @@ rule all:
         os.path.join("data", "raw", "splcv_metadata.tsv"),
         os.path.join("data", "processed", "splcv_clean.fasta"),
         os.path.join("data", "processed", "splcv_final.fasta"),
-        os.path.join("data", "processed", "splcv_normalized.fasta")
+        os.path.join("data", "processed", "splcv_normalized.fasta"),
+        os.path.join("results", "alignment", "splcv_aligned.fasta")
 
 # --- Workflow Rules ---
 
@@ -115,4 +116,28 @@ rule normalize_genomes:
             --input {input.fasta} \
             --output {output.fasta} \
             --motif {params.motif} > {log} 2>&1
+        """
+
+################################################################################
+# Multiple Sequence Alignment Step
+################################################################################
+
+rule align_genomes:
+    """
+    Step 5: Perform Multiple Sequence Alignment (MSA) using MAFFT.
+    Running in a dedicated Conda environment.
+    """
+    input:
+        fasta = "data/processed/splcv_normalized.fasta"
+    output:
+        alignment = "results/alignment/splcv_aligned.fasta"
+    threads: 8 
+    conda:
+        "envs/mafft.yaml" 
+    log:
+        "results/logs/align_genomes.log"
+    shell:
+        """
+        mkdir -p results/alignment
+        mafft --auto --thread {threads} {input.fasta} > {output.alignment} 2> {log}
         """
