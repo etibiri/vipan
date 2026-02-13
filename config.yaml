@@ -1,0 +1,8 @@
+# NCBI Settings
+ncbi:
+  email: "ezechiel.tibiri@ujkz.bf"
+
+# Filtering thresholds for SPLCV (Begomovirus)
+filters:
+  min_len: 2500
+  max_len: 3000
