@@ -4,5 +4,5 @@ ncbi:
 
 # Filtering thresholds for SPLCV (Begomovirus)
 filters:
-  min_len: 2500
-  max_len: 3000
+  min_len: 2200
+  max_len: 3300
