@@ -93,8 +93,11 @@ rule remove_duplicates:
 # --- Rotate circular rule ---
 rule normalize_genomes:
     """
-    Step 4: Rotate circular genomes to start at the conserved nonanucleotide (TAATATTAC).
-    This ensures all sequences are in the same phase for alignment.
+    Step 4: Normalize circular genomes.
+    1. Checks for conserved nonanucleotide (TAATATTAC).
+    2. Flips to Reverse Complement if necessary.
+    3. Rotates sequence to start at the motif.
+    Ensures absolute co-linearity for Multiple Sequence Alignment.
     """
     input:
         fasta = "data/processed/splcv_final.fasta"
