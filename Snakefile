@@ -19,7 +19,9 @@ rule all:
         os.path.join("data", "processed", "splcv_clean.fasta"),
         os.path.join("data", "processed", "splcv_final.fasta"),
         os.path.join("data", "processed", "splcv_normalized.fasta"),
-        os.path.join("results", "alignment", "splcv_aligned.fasta")
+        os.path.join("results", "alignment", "splcv_aligned.fasta"),
+        os.path.join("results", "analysis", "diversity_pi.tsv"),
+        os.path.join("results", "plots", "pangenome_diversity.pdf")
 
 # --- Workflow Rules ---
 
@@ -140,4 +142,47 @@ rule align_genomes:
         """
         mkdir -p results/alignment
         mafft --auto --thread {threads} {input.fasta} > {output.alignment} 2> {log}
+        """
+rule analyze_diversity:
+    """
+    Step 6: Generate consensus sequence and calculate sliding-window diversity (Pi).
+    Identifies variable regions and conserved motifs.
+    """
+    input:
+        alignment = "results/alignment/splcv_aligned.fasta"
+    output:
+        consensus = "results/analysis/consensus.fasta",
+        plot_data = "results/analysis/diversity_pi.tsv"
+    conda:
+        "envs/biopython.yaml"
+    log:
+        "results/logs/analyze_diversity.log"
+    shell:
+        """
+        mkdir -p results/analysis
+        python scripts/calculate_diversity.py \
+            --input {input.alignment} \
+            --consensus {output.consensus} \
+            --plot_data {output.plot_data} > {log} 2>&1
+        """
+
+rule plot_diversity:
+    """
+    Step 7: Generate a PDF plot of Nucleotide Diversity (π).
+    Visualizes hotspots of variation across the viral pangenome.
+    """
+    input:
+        data = "results/analysis/diversity_pi.tsv"
+    output:
+        pdf = "results/plots/pangenome_diversity.pdf"
+    conda:
+        "envs/biopython.yaml"
+    log:
+        "results/logs/plot_diversity.log"
+    shell:
+        """
+        mkdir -p results/plots
+        python scripts/plot_diversity.py \
+            --input {input.data} \
+            --output {output.pdf} > {log} 2>&1
         """
