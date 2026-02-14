@@ -1,0 +1,6 @@
+name: hyphy
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - hyphy=2.5.93

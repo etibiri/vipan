@@ -21,7 +21,8 @@ rule all:
         os.path.join("data", "processed", "splcv_normalized.fasta"),
         os.path.join("results", "alignment", "splcv_aligned.fasta"),
         os.path.join("results", "analysis", "diversity_pi.tsv"),
-        os.path.join("results", "plots", "pangenome_diversity.pdf")
+        os.path.join("results", "plots", "pangenome_diversity.pdf"),
+        os.path.join("results", "recombination", "gard_output.json")
 
 # --- Workflow Rules ---
 
@@ -186,3 +187,36 @@ rule plot_diversity:
             --input {input.data} \
             --output {output.pdf} > {log} 2>&1
         """
+
+################################################################################
+# Recombination Analysis with GARD (HyPhy)
+################################################################################
+
+rule run_gard:
+    """
+    Step 8: Detect recombination breakpoints using GARD (HyPhy).
+    This identifies if segments of the genome have different evolutionary histories.
+    """
+    input:
+        alignment = "results/alignment/splcv_aligned.fasta"
+    output:
+        # GARD produces several files; these are the primary ones
+        json = "results/recombination/gard_output.json",
+        markdown = "results/recombination/gard_output.md"
+    params:
+        out_prefix = "results/recombination/gard_output"
+    threads: 16  # GARD is highly parallelizable
+    conda:
+        "envs/hyphy.yaml"
+    log:
+        "results/logs/run_gard.log"
+    shell:
+        """
+        mkdir -p results/recombination
+        # We use the 'gard' standard analysis from the HyPhy library
+        hyphy gard --alignment {input.alignment} \
+                   --type Nucleotide \
+                   --model GTR \
+                   --output {output.json} > {log} 2>&1
+        """
+
