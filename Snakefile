@@ -205,7 +205,7 @@ rule run_gard:
         markdown = "results/recombination/gard_output.md"
     params:
         out_prefix = "results/recombination/gard_output"
-    threads: 16  # GARD is highly parallelizable
+    threads: 16  
     conda:
         "envs/hyphy.yaml"
     log:
@@ -215,7 +215,7 @@ rule run_gard:
         mkdir -p results/recombination
         # We use the 'gard' standard analysis from the HyPhy library
         hyphy gard --alignment {input.alignment} \
-                   --type Nucleotide \
+                   --type nucleotide \
                    --model GTR \
                    --output {output.json} > {log} 2>&1
         """
