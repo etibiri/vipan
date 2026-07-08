@@ -15,7 +15,7 @@ configfile: "config.yaml"
 rule all:
     input:
         os.path.join("data", "raw", "splcv_all.fasta"),
-        os.path.join("data", "raw", "splcv_metadata.tsv"),
+        os.path.join("data", "raw", "splcv_all.tsv"),
         os.path.join("data", "processed", "splcv_clean.fasta"),
         os.path.join("data", "processed", "splcv_final.fasta"),
         os.path.join("data", "processed", "splcv_normalized.fasta"),
@@ -34,7 +34,7 @@ rule download_genomes:
     """
     output:
         fasta = "data/raw/splcv_all.fasta",
-        metadata = "data/raw/splcv_metadata.tsv"
+        metadata = "data/raw/splcv_all.tsv"
     params:
         email = config["ncbi"]["email"],
         min_len = config["filters"]["min_len"],
@@ -135,8 +135,8 @@ rule align_genomes:
     output:
         alignment = "results/alignment/splcv_aligned.fasta"
     threads: 8 
-    conda:
-        "envs/mafft.yaml" 
+    singularity:
+        "containers/mafft-7.526.sif" 
     log:
         "results/logs/align_genomes.log"
     shell:
@@ -192,6 +192,36 @@ rule plot_diversity:
 # Recombination Analysis with GARD (HyPhy)
 ################################################################################
 
+#rule run_gard:
+#    """
+#    Step 8: Detect recombination breakpoints using GARD (HyPhy).
+#    This identifies if segments of the genome have different evolutionary histories.
+#    """
+#    input:
+#        alignment = "results/alignment/splcv_aligned.fasta"
+#    output:
+#        # GARD produces several files; these are the primary ones
+#        json = "results/recombination/gard_output.json",
+#        markdown = "results/recombination/gard_output.md"
+#    params:
+#        out_prefix = "results/recombination/gard_output"
+#    threads: 16  
+#    conda:
+#        "envs/hyphy.yaml"
+#    log:
+#        "results/logs/run_gard.log"
+#    shell:
+#        """
+#        mkdir -p results/recombination
+#        # We use the 'gard' standard analysis from the HyPhy library
+#        hyphy gard --alignment {input.alignment} \
+#                   --type nucleotide \
+#                   --model GTR \
+#                   --output {output.json} > {log} 2>&1
+#        """
+################################################################################
+# Recombination Analysis with GARD (HyPhy)
+################################################################################
 rule run_gard:
     """
     Step 8: Detect recombination breakpoints using GARD (HyPhy).
@@ -200,23 +230,34 @@ rule run_gard:
     input:
         alignment = "results/alignment/splcv_aligned.fasta"
     output:
-        # GARD produces several files; these are the primary ones
         json = "results/recombination/gard_output.json",
         markdown = "results/recombination/gard_output.md"
     params:
         out_prefix = "results/recombination/gard_output"
-    threads: 16  
-    conda:
-        "envs/hyphy.yaml"
+    threads: 32  
+    resources:
+        mem_mb=224000,   
+    singularity:
+        "containers/hyphy_2.5.73.sif" 
     log:
         "results/logs/run_gard.log"
     shell:
         """
-        mkdir -p results/recombination
-        # We use the 'gard' standard analysis from the HyPhy library
+        # Exécution dans le conteneur Singularity
         hyphy gard --alignment {input.alignment} \
                    --type nucleotide \
+                   --mode Faster \
+                   --CPU {threads} \
                    --model GTR \
+                   ENV='TOLERATE_NUMERICAL_ERRORS=1;RESPECT_GARD_CPU_LIMIT=1;' \
+                   --rerun-incomplete \
                    --output {output.json} > {log} 2>&1
         """
-
+# --- Parse GARD JSON → TSV breakpoints ----------------------------------------
+rule extract_breakpoints:
+    input:
+        json = "results/recombination/gard_output.json"
+    output:
+        csv = "results/recombination/breakpoints.csv"
+    script:
+        "scripts/extract_breakpoints.py" 
