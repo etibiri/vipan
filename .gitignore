@@ -1,5 +1,6 @@
 data/
 results/
+containers/
 .snakemake/
 __pycache__/
 .DS_Store
