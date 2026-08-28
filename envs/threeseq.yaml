@@ -1,0 +1,10 @@
+name: threeseq
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - gcc
+  - gxx
+  - make
+  - wget
+  - unzip
