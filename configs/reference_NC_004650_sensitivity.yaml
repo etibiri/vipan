@@ -1,0 +1,20 @@
+run_id: splcv_refiltered_reference_NC004650_deterministic_v2
+
+alignment:
+  threads: 8
+  mafft_options: "--auto --threadit 0"
+
+distance_filter:
+  mode: reference
+  reference_accession: NC_004650.1
+  max_p_distance: 0.25
+  min_comparable_sites: 2000
+  min_overlap_fraction: 0.0
+  min_valid_bases: 2400
+  max_gap_fraction: 1.0
+  max_ambiguity_fraction: 0.05
+  manual_keep: ""
+  manual_exclude: ""
+
+rdp:
+  report_csv: data/rdp/splcv_refiltered_reference_NC004650_deterministic_v2_report.csv
