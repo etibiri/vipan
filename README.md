@@ -251,6 +251,6 @@ See `LICENSE`.
 
 ## 12. A note on nomenclature
 
-RDP**4** (not RDP5) was the software actually used for recombination
+RDP**4** was the software actually used for recombination
 detection in this workflow (`rdp.report_csv` inputs, §2.5 of the
 manuscript). 
