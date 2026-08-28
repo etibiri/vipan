@@ -253,9 +253,4 @@ See `LICENSE`.
 
 RDP**4** (not RDP5) was the software actually used for recombination
 detection in this workflow (`rdp.report_csv` inputs, §2.5 of the
-manuscript). Any remaining "RDP5" text in this repository is either (a)
-a legitimate citation of the RDP5 *software paper itself* as a
-bibliographic reference (distinct from a claim that RDP5 was used here),
-or (b) content inside raw, unmodified result files/directory names where
-"RDP-*N*" denotes an internal event index, not a software version, and
-which are preserved unmodified for traceability.
+manuscript). 
