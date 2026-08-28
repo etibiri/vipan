@@ -167,16 +167,17 @@ def main():
         '"Sweet potato leaf curl Spain virus"[All Fields]',
         '"Begomovirus ipomoeacanaryense"[All Fields]',
         '"Begomovirus ipomoeachinaense"[All Fields]',
-        '"sweet potato leaf curl Georgia virus"[All Fields]',
-        '"sweet potato leaf curl Guangxi virus"[All Fields]',
-        '"sweet potato leaf curl Henan virus"[All Fields]',
-        '"sweet potato leaf curl Hubei virus"[All Fields]',
-        '"sweet potato golden Korea vein virus"[All Fields]',
-        '"sweet potato mosaic virus"[All Fields]',
-        '"sweet potato leaf curl Sao Paulo virus"[All Fields]',
-        '"sweet potato leaf curl Shandong virus"[All Fields]',
-        '"sweet potato leaf curl Sichuan virus"[All Fields]',
-        '"sweet potato leaf curl South Carolina virus"[All Fields]'
+        '"Sweet potato leaf curl Georgia virus"[All Fields]',
+        '"Sweet potato leaf curl Guangxi virus"[All Fields]',
+        '"Sweet potato leaf curl Henan virus"[All Fields]',
+        '"Sweet potato leaf curl Hubei virus"[All Fields]',
+        '"Sweet potato golden Korea vein virus"[All Fields]',
+        '"Sweet potato mosaic virus"[All Fields]',
+        '"Sweet potato leaf curl Sao Paulo virus"[All Fields]',
+        '"Sweet potato leaf curl Shandong virus"[All Fields]',
+        '"Sweet potato leaf curl Sichuan virus"[All Fields]',
+        '"Sweet potato leaf curl South Carolina virus"[All Fields]',
+        '"Sweet potato leaf curl virus"[All Fields]'
     ]
     
     # Construction de la requête
