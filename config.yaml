@@ -1,8 +1,118 @@
-# NCBI Settings
-ncbi:
-  email: "ezechiel.tibiri@ujkz.bf"
+# Every biologically distinct rerun must use a new run_id.  This prevents a new
+# alignment from silently overwriting the 327-sequence analysis.
+run_id: splcv_refiltered_v1
 
-# Filtering thresholds for SPLCV (Begomovirus)
-filters:
-  min_len: 2200
-  max_len: 3300
+input:
+  fasta: data/raw/splcv_all-0726.fasta
+  metadata: data/raw/splcv_all-0726.tsv
+
+preprocessing:
+  min_length: 2600
+  max_ambiguous_fraction: 0.05
+  deduplicate_exact: true
+  # Begomovirus circular origin motif.  Disable orient_by_motif only when every
+  # input genome is already demonstrably linearized at the same origin.
+  orient_by_motif: true
+  circular_motif: TAATATTAC
+  max_motif_mismatches: 1
+  require_motif: false
+
+alignment:
+  threads: 8
+  # Orientation is already standardized by the circular motif step.  MAFFT's
+  # --adjustdirectionaccurately may prefix identifiers with _R_ and is therefore
+  # not enabled in the reproducible default.
+  mafft_options: "--auto"
+
+distance_filter:
+  # medoid is objective when no single biological reference is imposed.
+  # Use mode: reference and set reference_accession for a predefined clade.
+  mode: medoid
+  reference_accession: ""
+  max_p_distance: 0.25
+  min_comparable_sites: 2000
+  min_overlap_fraction: 0.0
+  min_valid_bases: 2400
+  max_gap_fraction: 1.0
+  max_ambiguity_fraction: 0.05
+  manual_keep: ""
+  manual_exclude: ""
+
+threeseq:
+  executable: resources/3seq/3seq
+  ptable: resources/3seq/pvalue_tables/pvaluetable_700
+  run_id: splcv_3seq
+  threads: 4
+  mem_mb: 20000
+  runtime_minutes: 720
+
+rdp:
+  # RDP4 GUI export is the only manual boundary in the default workflow.
+  # Run RDP on results/<run_id>/alignment/final_alignment.fasta and export here.
+  report_csv: data/rdp/splcv_refiltered_v1_report.csv
+  min_methods: 3
+  min_tested_methods: 7
+  min_support_fraction: 0.50
+  max_missing_methods: 2
+  method_pvalue_cutoff: 0.05
+  min_fragment_length: 100
+  include_internal_3seq: false
+  require_known_parents: true
+  allow_caret: false
+  allow_tilde: false
+
+comparison:
+  topology: circular
+  rdp_coordinate_system: alignment
+  tolerance: 50
+  moderate_multiplier: 2
+  parent_penalty: 0
+
+validation:
+  tiers: Tier_B
+  window: 200
+  step: 20
+  bootstrap_replicates: 1000
+  seed: 20260820
+  rdp_candidates_per_role: 2
+  context_size: 8
+  context_accessions: ""
+  min_column_occupancy: 0.70
+  min_segment_length: 100
+  iqtree_model: MFP
+  ufboot: 1000
+  alrt: 1000
+  minimum_alrt: 80
+  minimum_ufboot: 95
+  local_bipartition_maximum: 4
+  intermediate_bipartition_maximum: 6
+  threads: 8
+  mem_mb: 32000
+  runtime_minutes: 720
+  formats: png,pdf
+  reuse_existing: false
+
+phylogenetic_signal:
+  target_classes: D_expected_switch_insufficient_branch_support
+  minimum_site_occupancy: 0.70
+  minimum_informative_sites: 20
+  minimum_informative_percent: 1.0
+  minimum_comparable_sites: 50
+  equivalent_identity_margin: 0.5
+  formats: png,pdf
+
+phylogenetic_network:
+  # Neighbor-Net-family circular split network (see scripts/build_phylogenetic_network.py
+  # for the full method and its explicit limitations). Splits with a smaller
+  # side above this many taxa are not fit (keeps NNLS tractable for n in the
+  # hundreds without the specialized recursive circular-NNLS solver).
+  max_split_side: 5
+  min_split_weight_fraction: 0.002
+  # Species-demarcation-consistent threshold (~91% identity) used to cut the
+  # coarse per-dataset clustering that seeds species_or_group labels.
+  coarse_cluster_p_distance: 0.09
+  # Coarse clusters larger than this are further split into ~balanced
+  # 'genetic group' sub-clusters (never 'subspecies').
+  lineage_split_size: 25
+  mem_mb: 8000
+  runtime_minutes: 60
