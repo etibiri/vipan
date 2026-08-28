@@ -1,0 +1,1336 @@
+#!/usr/bin/env python3
+"""Visualize and validate prioritized RDP/3SEQ recombination events.
+
+For every selected event, this program:
+
+1. selects the most informative parental candidates from the RDP and 3SEQ
+   results;
+2. generates a sliding-window SimPlot-style nucleotide identity profile;
+3. performs a BootScan-style analysis using bootstrap-resampled windows and
+   neighbor-joining trees;
+4. extracts the two circular genome partitions defined independently by the
+   RDP and 3SEQ breakpoint pairs;
+5. optionally runs IQ-TREE 2 with ModelFinder, SH-aLRT and ultrafast bootstrap;
+6. writes machine-readable tables, publication-ready figures and FASTA files
+   that can also be opened in the graphical SimPlot++ application.
+
+The BootScan implementation records, for each bootstrap replicate, which
+candidate parent is the closest terminal to the recombinant in an NJ tree.
+This is an automated event-screening analysis. Final claims should be supported
+by the segment-specific maximum-likelihood phylogenies and manual inspection.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import math
+import os
+import random
+import re
+import shutil
+import subprocess
+import sys
+from collections import Counter, defaultdict
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+
+# Avoid a read-only $HOME warning on HPC login/compute nodes.
+os.environ.setdefault(
+    "MPLCONFIGDIR",
+    os.path.join(os.environ.get("TMPDIR", "/tmp"), "matplotlib-vipan"),
+)
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from Bio import Phylo
+from Bio.Phylo.TreeConstruction import DistanceMatrix, DistanceTreeConstructor
+
+
+VALID_BASES = frozenset("ACGT")
+ACCESSION_RE = re.compile(
+    r"(?<![A-Za-z0-9_])(?:[A-Z]{1,5}_\d{4,10}|[A-Z]{1,5}\d{5,10})"
+    r"(?:\.\d+)?(?![A-Za-z0-9_])",
+    flags=re.IGNORECASE,
+)
+
+
+def eprint(*args: object) -> None:
+    print(*args, file=sys.stderr)
+
+
+def clean_text(value: object) -> str:
+    return re.sub(r"\s+", " ", str(value or "").replace("\u00a0", " ")).strip()
+
+
+def safe_name(value: object, maximum: int = 100) -> str:
+    text = re.sub(r"[^A-Za-z0-9_.-]+", "_", clean_text(value)).strip("_.")
+    return (text or "unnamed")[:maximum]
+
+
+def parse_accessions(value: object) -> List[str]:
+    text = clean_text(value)
+    found = [match.group(0).upper() for match in ACCESSION_RE.finditer(text)]
+    if found:
+        return list(dict.fromkeys(found))
+    tokens = []
+    for token in re.split(r"[;,]+", text):
+        token = clean_text(token).lstrip("^~*").split()[0] if clean_text(token) else ""
+        if token and token.lower() not in {"unknown", "none", "na", "n/a", "-"}:
+            tokens.append(token.upper())
+    return list(dict.fromkeys(tokens))
+
+
+def first_accession(value: object) -> str:
+    values = parse_accessions(value)
+    return values[0] if values else ""
+
+
+def optional_int(value: object) -> Optional[int]:
+    match = re.search(r"-?\d+", clean_text(value))
+    return int(match.group(0)) if match else None
+
+
+def optional_float(value: object) -> Optional[float]:
+    text = clean_text(value)
+    if not text:
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def read_fasta_alignment(path: Path) -> Tuple[Dict[str, str], Dict[str, str]]:
+    """Read an aligned FASTA, indexed by the first normalized accession."""
+
+    sequences: Dict[str, str] = {}
+    descriptions: Dict[str, str] = {}
+    current_description = ""
+    current_parts: List[str] = []
+
+    def store_current() -> None:
+        if not current_description:
+            return
+        accession = first_accession(current_description)
+        if not accession:
+            accession = current_description.split()[0].upper()
+        sequence = "".join(current_parts).upper().replace(" ", "")
+        if accession in sequences and sequences[accession] != sequence:
+            raise ValueError(f"Duplicate accession with different sequences: {accession}")
+        sequences[accession] = sequence
+        descriptions[accession] = current_description
+
+    with path.open("r", encoding="utf-8") as handle:
+        for raw_line in handle:
+            line = raw_line.strip()
+            if not line:
+                continue
+            if line.startswith(">"):
+                store_current()
+                current_description = line[1:].strip()
+                current_parts = []
+            else:
+                current_parts.append(re.sub(r"\s+", "", line))
+        store_current()
+
+    if not sequences:
+        raise ValueError(f"No FASTA sequences found in {path}")
+    lengths = sorted({len(sequence) for sequence in sequences.values()})
+    if len(lengths) != 1:
+        raise ValueError(f"Input FASTA is not aligned; lengths observed: {lengths[:10]}")
+    return sequences, descriptions
+
+
+def read_event_table(path: Path) -> List[Dict[str, str]]:
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle, delimiter="\t")
+        if not reader.fieldnames:
+            raise ValueError(f"Missing header in event table: {path}")
+        required = {
+            "Recombinant_accession",
+            "3SEQ_parent_1",
+            "3SEQ_parent_2",
+            "RDP_minor_parents",
+            "RDP_major_parents",
+            "RDP_breakpoint_1",
+            "RDP_breakpoint_2",
+        }
+        missing = sorted(required - set(reader.fieldnames))
+        if missing:
+            raise ValueError(f"Event table is missing columns: {', '.join(missing)}")
+        return [dict(row) for row in reader]
+
+
+def read_accession_list(path: Path) -> List[str]:
+    accessions: List[str] = []
+    with path.open("r", encoding="utf-8-sig") as handle:
+        for raw_line in handle:
+            line = raw_line.strip()
+            if not line or line.startswith("#"):
+                continue
+            accession = first_accession(line)
+            if accession:
+                accessions.append(accession)
+    return list(dict.fromkeys(accessions))
+
+
+def infer_evidence_tier(row: Mapping[str, str]) -> str:
+    """Infer the A--E prioritization tier used in the concordance analysis."""
+
+    supplied = clean_text(row.get("Evidence_tier", ""))
+    if supplied:
+        return supplied
+    concordance = clean_text(row.get("Concordance_class", ""))
+    parent = clean_text(row.get("Parent_concordance", ""))
+    has_parent_support = parent in {"Both_parents", "One_parent"}
+    if concordance == "Strong_concordance":
+        return "Tier_A"
+    if concordance in {"Moderate_concordance", "Partial_concordance"}:
+        return "Tier_B" if has_parent_support else "Tier_C"
+    if concordance == "Sequence_only":
+        return "Tier_D" if has_parent_support else "Tier_E"
+    return "Unclassified"
+
+
+def write_fasta(path: Path, records: Mapping[str, str], width: int = 80) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        for accession, sequence in records.items():
+            handle.write(f">{accession}\n")
+            for start in range(0, len(sequence), width):
+                handle.write(sequence[start : start + width] + "\n")
+
+
+def write_tsv(path: Path, rows: Sequence[Mapping[str, object]], fields: Sequence[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=list(fields),
+            delimiter="\t",
+            lineterminator="\n",
+            extrasaction="ignore",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def window_indices(center: int, window: int, length: int, circular: bool) -> np.ndarray:
+    half = window // 2
+    raw = np.arange(center - half, center - half + window, dtype=int)
+    if circular:
+        return raw % length
+    return raw[(raw >= 0) & (raw < length)]
+
+
+def arc_indices(start: int, end: int, length: int, circular: bool) -> np.ndarray:
+    """Return one-based inclusive start/end coordinates as zero-based indices."""
+
+    start_index = (start - 1) % length
+    end_index = (end - 1) % length
+    if not circular:
+        low, high = sorted((start_index, end_index))
+        return np.arange(low, high + 1, dtype=int)
+    if start_index <= end_index:
+        return np.arange(start_index, end_index + 1, dtype=int)
+    return np.concatenate(
+        [np.arange(start_index, length, dtype=int), np.arange(0, end_index + 1, dtype=int)]
+    )
+
+
+def complement_indices(indices: np.ndarray, length: int) -> np.ndarray:
+    mask = np.ones(length, dtype=bool)
+    mask[np.unique(indices)] = False
+    return np.flatnonzero(mask)
+
+
+def interval_midpoint(start: int, end: int, length: int, circular: bool) -> int:
+    """Return a representative one-based midpoint, accepting 0 at the origin."""
+
+    if not circular or start <= end:
+        midpoint = int(round((start + end) / 2.0))
+        return max(1, min(length, midpoint))
+    start0 = (start - 1) % length
+    end0 = (end - 1) % length
+    span = (end0 - start0) % length
+    return int((start0 + span / 2.0) % length) + 1
+
+
+def pairwise_identity(sequence_a: str, sequence_b: str, indices: np.ndarray) -> Tuple[float, int]:
+    valid = 0
+    identical = 0
+    for index in indices:
+        a = sequence_a[int(index)]
+        b = sequence_b[int(index)]
+        if a in VALID_BASES and b in VALID_BASES:
+            valid += 1
+            identical += a == b
+    if valid == 0:
+        return math.nan, 0
+    return 100.0 * identical / valid, valid
+
+
+def p_distance(sequence_a: str, sequence_b: str) -> float:
+    valid = 0
+    differences = 0
+    for a, b in zip(sequence_a, sequence_b):
+        if a in VALID_BASES and b in VALID_BASES:
+            valid += 1
+            differences += a != b
+    return differences / valid if valid else 1.0
+
+
+def rank_candidates(
+    query: str,
+    candidates: Iterable[str],
+    sequences: Mapping[str, str],
+    indices: np.ndarray,
+    number: int,
+) -> List[Tuple[str, float]]:
+    ranked: List[Tuple[str, float]] = []
+    for accession in sorted(set(candidates)):
+        if accession == query or accession not in sequences:
+            continue
+        identity, valid = pairwise_identity(sequences[query], sequences[accession], indices)
+        if valid:
+            ranked.append((accession, identity))
+    ranked.sort(key=lambda item: (-item[1], item[0]))
+    return ranked[:number]
+
+
+@dataclass
+class SelectedSequences:
+    parents: List[str]
+    roles: Dict[str, List[str]]
+    scores: Dict[str, float]
+    contexts: List[str]
+
+
+def select_event_sequences(
+    row: Mapping[str, str],
+    sequences: Mapping[str, str],
+    length: int,
+    circular: bool,
+    candidates_per_role: int,
+    context_size: int,
+    curated_contexts: Sequence[str],
+) -> SelectedSequences:
+    query = first_accession(row.get("Recombinant_accession", ""))
+    if query not in sequences:
+        raise ValueError(f"Recombinant {query or '<missing>'} is absent from the alignment")
+
+    rdp_bp1 = optional_int(row.get("RDP_breakpoint_1"))
+    rdp_bp2 = optional_int(row.get("RDP_breakpoint_2"))
+    if rdp_bp1 is not None and rdp_bp2 is not None:
+        minor_region = arc_indices(rdp_bp1, rdp_bp2, length, circular)
+        major_region = complement_indices(minor_region, length)
+    else:
+        minor_region = np.arange(length, dtype=int)
+        major_region = minor_region
+
+    roles: Dict[str, set] = defaultdict(set)
+    scores: Dict[str, float] = {}
+
+    for role, column in (("3SEQ_parent_1", "3SEQ_parent_1"), ("3SEQ_parent_2", "3SEQ_parent_2")):
+        accession = first_accession(row.get(column, ""))
+        if accession and accession in sequences and accession != query:
+            roles[accession].add(role)
+            identity, valid = pairwise_identity(sequences[query], sequences[accession], np.arange(length))
+            if valid:
+                scores[accession] = identity
+
+    minor_candidates = parse_accessions(row.get("RDP_minor_parents", ""))
+    major_candidates = parse_accessions(row.get("RDP_major_parents", ""))
+    for accession, identity in rank_candidates(
+        query, minor_candidates, sequences, minor_region, candidates_per_role
+    ):
+        roles[accession].add("RDP_minor")
+        scores[accession] = max(scores.get(accession, -math.inf), identity)
+    for accession, identity in rank_candidates(
+        query, major_candidates, sequences, major_region, candidates_per_role
+    ):
+        roles[accession].add("RDP_major")
+        scores[accession] = max(scores.get(accession, -math.inf), identity)
+
+    parents = sorted(roles, key=lambda accession: (-scores.get(accession, 0.0), accession))
+    excluded = set(parents) | {query}
+    contexts = [
+        accession
+        for accession in curated_contexts
+        if accession in sequences and accession not in excluded
+    ]
+    if not contexts:
+        full_indices = np.arange(length, dtype=int)
+        context_ranked = rank_candidates(
+            query,
+            (accession for accession in sequences if accession not in excluded),
+            sequences,
+            full_indices,
+            context_size,
+        )
+        contexts = [accession for accession, _ in context_ranked]
+    return SelectedSequences(
+        parents=parents,
+        roles={accession: sorted(values) for accession, values in roles.items()},
+        scores=scores,
+        contexts=contexts,
+    )
+
+
+def simplot_table(
+    query: str,
+    parents: Sequence[str],
+    sequences: Mapping[str, str],
+    window: int,
+    step: int,
+    circular: bool,
+) -> pd.DataFrame:
+    length = len(sequences[query])
+    rows = []
+    for center in range(0, length, step):
+        indices = window_indices(center, window, length, circular)
+        for parent in parents:
+            identity, valid = pairwise_identity(sequences[query], sequences[parent], indices)
+            rows.append(
+                {
+                    "Position": center + 1,
+                    "Parent": parent,
+                    "Identity_percent": identity,
+                    "Valid_sites": valid,
+                    "Window_size": len(indices),
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def make_distance_matrix(names: Sequence[str], sequence_strings: Sequence[str]) -> DistanceMatrix:
+    matrix: List[List[float]] = []
+    for i in range(len(names)):
+        current = []
+        for j in range(i + 1):
+            current.append(0.0 if i == j else p_distance(sequence_strings[i], sequence_strings[j]))
+        matrix.append(current)
+    return DistanceMatrix(list(names), matrix)
+
+
+def bootscan_window_task(
+    task: Tuple[int, List[str], List[str], int, int]
+) -> Tuple[int, Dict[str, float], int]:
+    """Bootstrap a single window and return nearest-parent NJ frequencies."""
+
+    position, names, strings, replicates, seed = task
+    query = names[0]
+    parents = names[1:]
+    if not parents or not strings or not strings[0]:
+        return position, {parent: math.nan for parent in parents}, 0
+
+    rng = random.Random(seed)
+    width = len(strings[0])
+    counts: Counter[str] = Counter()
+    usable = 0
+    constructor = DistanceTreeConstructor()
+
+    for _ in range(replicates):
+        sampled = [rng.randrange(width) for _ in range(width)]
+        replicate_strings = ["".join(sequence[index] for index in sampled) for sequence in strings]
+        try:
+            tree = constructor.nj(make_distance_matrix(names, replicate_strings))
+            nearest = min(parents, key=lambda parent: (tree.distance(query, parent), parent))
+        except Exception:
+            continue
+        counts[nearest] += 1
+        usable += 1
+
+    support = {
+        parent: (100.0 * counts[parent] / usable if usable else math.nan)
+        for parent in parents
+    }
+    return position, support, usable
+
+
+def bootscan_table(
+    query: str,
+    parents: Sequence[str],
+    sequences: Mapping[str, str],
+    window: int,
+    step: int,
+    replicates: int,
+    circular: bool,
+    seed: int,
+    processes: int,
+) -> pd.DataFrame:
+    length = len(sequences[query])
+    names = [query, *parents]
+    tasks = []
+    for task_index, center in enumerate(range(0, length, step)):
+        indices = window_indices(center, window, length, circular)
+        strings = ["".join(sequences[name][int(index)] for index in indices) for name in names]
+        tasks.append((center + 1, names, strings, replicates, seed + task_index * 104729))
+
+    if processes > 1:
+        with ProcessPoolExecutor(max_workers=processes) as executor:
+            results = list(executor.map(bootscan_window_task, tasks))
+    else:
+        results = [bootscan_window_task(task) for task in tasks]
+
+    rows = []
+    for position, supports, usable in results:
+        for parent in parents:
+            rows.append(
+                {
+                    "Position": position,
+                    "Parent": parent,
+                    "Bootstrap_support_percent": supports.get(parent, math.nan),
+                    "Usable_replicates": usable,
+                    "Requested_replicates": replicates,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def shade_interval(ax: plt.Axes, start: int, end: int, length: int, color: str, alpha: float) -> None:
+    if start <= end:
+        ax.axvspan(max(1, start), min(length, end), color=color, alpha=alpha, linewidth=0)
+    else:
+        ax.axvspan(max(1, start), length, color=color, alpha=alpha, linewidth=0)
+        ax.axvspan(1, min(length, end), color=color, alpha=alpha, linewidth=0)
+
+
+def add_breakpoint_annotations(ax: plt.Axes, row: Mapping[str, str], length: int) -> None:
+    rdp1 = optional_int(row.get("RDP_breakpoint_1"))
+    rdp2 = optional_int(row.get("RDP_breakpoint_2"))
+    if rdp1 is not None:
+        ax.axvline(rdp1, color="#d62728", linestyle="--", linewidth=1.2, alpha=0.9)
+    if rdp2 is not None:
+        ax.axvline(rdp2, color="#d62728", linestyle="--", linewidth=1.2, alpha=0.9)
+
+    for start_column, end_column in (
+        ("3SEQ_BP1_start", "3SEQ_BP1_end"),
+        ("3SEQ_BP2_start", "3SEQ_BP2_end"),
+    ):
+        start = optional_int(row.get(start_column))
+        end = optional_int(row.get(end_column))
+        if start is not None and end is not None:
+            shade_interval(ax, start, end, length, "#1f77b4", 0.12)
+
+
+def plot_profiles(
+    row: Mapping[str, str],
+    query: str,
+    selected: SelectedSequences,
+    simplot: pd.DataFrame,
+    bootscan: pd.DataFrame,
+    length: int,
+    output_prefix: Path,
+    formats: Sequence[str],
+) -> None:
+    colors = plt.get_cmap("tab10")
+    color_map = {
+        parent: colors(index % 10) for index, parent in enumerate(selected.parents)
+    }
+    figure, axes = plt.subplots(2, 1, figsize=(13, 8.5), sharex=True)
+
+    for parent in selected.parents:
+        role = ",".join(selected.roles.get(parent, []))
+        label = f"{parent} [{role}]" if role else parent
+        subset = simplot[simplot["Parent"] == parent]
+        axes[0].plot(
+            subset["Position"],
+            subset["Identity_percent"],
+            color=color_map[parent],
+            linewidth=1.6,
+            label=label,
+        )
+    axes[0].set_ylabel("Nucleotide identity (%)")
+    axes[0].set_ylim(0, 100)
+    axes[0].set_title(f"SimPlot-style sliding-window profile — {query}")
+    axes[0].grid(alpha=0.2)
+
+    for parent in selected.parents:
+        subset = bootscan[bootscan["Parent"] == parent]
+        axes[1].plot(
+            subset["Position"],
+            subset["Bootstrap_support_percent"],
+            color=color_map[parent],
+            linewidth=1.6,
+            label=parent,
+        )
+    axes[1].set_ylabel("BootScan NJ support (%)")
+    axes[1].set_xlabel("Alignment position (nt)")
+    axes[1].set_ylim(0, 100)
+    axes[1].set_xlim(1, length)
+    axes[1].grid(alpha=0.2)
+
+    for axis in axes:
+        add_breakpoint_annotations(axis, row, length)
+
+    handles, labels = axes[0].get_legend_handles_labels()
+    figure.legend(handles, labels, loc="center left", bbox_to_anchor=(0.82, 0.5), fontsize=8)
+    tier = row.get("Evidence_tier", "")
+    rdp_event = row.get("RDP_Event_ID", "")
+    three_event = row.get("3SEQ_Event_ID", "")
+    figure.suptitle(
+        f"{tier} | RDP={rdp_event} | 3SEQ={three_event}\n"
+        "RDP breakpoints: red dashed lines; 3SEQ ranges: blue shading",
+        fontsize=11,
+    )
+    figure.tight_layout(rect=(0, 0, 0.81, 0.94))
+    for extension in formats:
+        figure.savefig(f"{output_prefix}.{extension}", dpi=300, bbox_inches="tight")
+    plt.close(figure)
+
+
+def filter_segment_columns(records: Mapping[str, str], occupancy: float) -> Dict[str, str]:
+    names = list(records)
+    if not names:
+        return {}
+    array = np.array([list(records[name]) for name in names], dtype="U1")
+    valid = np.isin(array, list(VALID_BASES))
+    keep = valid.sum(axis=0) >= math.ceil(occupancy * len(names))
+    return {name: "".join(array[index, keep]) for index, name in enumerate(names)}
+
+
+def extract_records(
+    names: Sequence[str], sequences: Mapping[str, str], indices: np.ndarray
+) -> Dict[str, str]:
+    return {
+        name: "".join(sequences[name][int(index)] for index in indices)
+        for name in names
+    }
+
+
+def resolve_iqtree(executable: str) -> Optional[str]:
+    if os.path.sep in executable:
+        return executable if Path(executable).is_file() else None
+    resolved = shutil.which(executable)
+    if resolved:
+        return resolved
+    if executable == "iqtree2":
+        return shutil.which("iqtree")
+    return None
+
+
+def run_iqtree(
+    executable: str,
+    alignment: Path,
+    prefix: Path,
+    model: str,
+    ufboot: int,
+    alrt: int,
+    threads: int,
+    reuse_existing: bool,
+) -> Tuple[str, Path]:
+    log_path = Path(f"{prefix}.command.log")
+    treefile = Path(f"{prefix}.treefile")
+    if reuse_existing and treefile.is_file() and treefile.stat().st_size > 0:
+        return "reused", treefile
+    command = [
+        executable,
+        "-s",
+        str(alignment.resolve()),
+        "-m",
+        model,
+        "-T",
+        str(threads),
+        "--prefix",
+        str(prefix.resolve()),
+    ]
+    if not reuse_existing:
+        command.append("--redo")
+    if ufboot > 0:
+        command.extend(["-B", str(ufboot)])
+    if alrt > 0:
+        command.extend(["--alrt", str(alrt)])
+
+    with log_path.open("w", encoding="utf-8") as log_handle:
+        log_handle.write("COMMAND: " + " ".join(command) + "\n\n")
+        process = subprocess.run(
+            command,
+            stdout=log_handle,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+    return ("completed" if process.returncode == 0 and treefile.is_file() else "failed"), treefile
+
+
+def parse_iqtree_branch_support(clade: object) -> Tuple[str, Optional[float], Optional[float]]:
+    """Extract SH-aLRT/UFBoot values from an IQ-TREE Newick branch label."""
+
+    candidates = [
+        clean_text(getattr(clade, "name", "")),
+        clean_text(getattr(clade, "comment", "")),
+    ]
+    confidence = getattr(clade, "confidence", None)
+    if confidence is not None:
+        candidates.append(clean_text(confidence))
+    pattern = re.compile(
+        r"(?<![0-9.])(\d+(?:\.\d+)?)\s*/\s*(\d+(?:\.\d+)?)(?![0-9.])"
+    )
+    for candidate in candidates:
+        match = pattern.search(candidate)
+        if match:
+            return candidate, float(match.group(1)), float(match.group(2))
+    return "", None, None
+
+
+def find_pair_bipartition_support(
+    tree: object, query: str, parent: str
+) -> Tuple[str, Optional[float], Optional[float], Optional[int], Optional[int]]:
+    """Find root-independent support for the smallest split grouping a taxon pair.
+
+    IQ-TREE trees are unrooted. A direct ``common_ancestor`` call can therefore
+    return the arbitrary Newick root and lose the support label. Each labelled
+    non-terminal edge instead defines a bipartition; both sides are inspected,
+    making this search independent of the displayed root.
+    """
+
+    all_terminals = {
+        terminal.name for terminal in tree.get_terminals() if terminal.name
+    }
+    total = len(all_terminals)
+    if query not in all_terminals or parent not in all_terminals or total < 4:
+        return "", None, None, None, total
+
+    candidates: List[Tuple[int, float, float, str]] = []
+    for clade in tree.find_clades(order="preorder"):
+        if clade is tree.root or clade.is_terminal():
+            continue
+        raw, alrt, ufboot = parse_iqtree_branch_support(clade)
+        if alrt is None or ufboot is None:
+            continue
+        descendant = {
+            terminal.name for terminal in clade.get_terminals() if terminal.name
+        }
+        if query in descendant and parent in descendant:
+            side_size = len(descendant)
+        elif query not in descendant and parent not in descendant:
+            side_size = total - len(descendant)
+        else:
+            continue
+        if 2 <= side_size < total:
+            candidates.append((side_size, -ufboot, -alrt, raw))
+
+    if not candidates:
+        return "", None, None, None, total
+    side_size, negative_ufboot, negative_alrt, raw = min(candidates)
+    return raw, -negative_alrt, -negative_ufboot, side_size, total
+
+
+def plot_tree(
+    treefile: Path,
+    output_prefix: Path,
+    query: str,
+    selected: SelectedSequences,
+    formats: Sequence[str],
+) -> None:
+    tree = Phylo.read(str(treefile), "newick")
+    colors = {query: "#d62728"}
+    for parent in selected.parents:
+        colors[parent] = "#1f77b4"
+    for context in selected.contexts:
+        colors[context] = "#555555"
+    figure = plt.figure(figsize=(10, max(6, 0.35 * len(tree.get_terminals()))))
+    axis = figure.add_subplot(1, 1, 1)
+
+    def branch_label(clade: object) -> Optional[str]:
+        if getattr(clade, "is_terminal")():
+            return None
+        raw, _, _ = parse_iqtree_branch_support(clade)
+        return raw or None
+
+    Phylo.draw(
+        tree,
+        axes=axis,
+        do_show=False,
+        label_colors=colors,
+        branch_labels=branch_label,
+    )
+    axis.set_title(f"Segment-specific maximum-likelihood tree — {query}")
+    figure.tight_layout()
+    for extension in formats:
+        figure.savefig(f"{output_prefix}.{extension}", dpi=300, bbox_inches="tight")
+    plt.close(figure)
+
+
+def summarize_tree(
+    treefile: Path,
+    query: str,
+    selected: SelectedSequences,
+    metadata: Mapping[str, object],
+) -> Dict[str, object]:
+    result = dict(metadata)
+    result.update(
+        {
+            "Treefile": str(treefile),
+            "Nearest_selected_parent": "",
+            "Nearest_parent_roles": "",
+            "Patristic_distance": "",
+            "Nearest_parent_clade_support_raw": "",
+            "Nearest_parent_SH_aLRT": "",
+            "Nearest_parent_UFBoot": "",
+            "Nearest_parent_supported_bipartition_size": "",
+            "Tree_number_taxa": "",
+        }
+    )
+    try:
+        tree = Phylo.read(str(treefile), "newick")
+        terminals = {terminal.name for terminal in tree.get_terminals()}
+        parents = [parent for parent in selected.parents if parent in terminals]
+        if query in terminals and parents:
+            nearest = min(parents, key=lambda parent: (tree.distance(query, parent), parent))
+            result["Nearest_selected_parent"] = nearest
+            result["Nearest_parent_roles"] = ";".join(selected.roles.get(nearest, []))
+            result["Patristic_distance"] = f"{tree.distance(query, nearest):.8f}"
+            raw_support, alrt, ufboot, bipartition_size, total_taxa = (
+                find_pair_bipartition_support(tree, query, nearest)
+            )
+            result["Nearest_parent_clade_support_raw"] = raw_support
+            result["Nearest_parent_SH_aLRT"] = "" if alrt is None else alrt
+            result["Nearest_parent_UFBoot"] = "" if ufboot is None else ufboot
+            result["Nearest_parent_supported_bipartition_size"] = (
+                "" if bipartition_size is None else bipartition_size
+            )
+            result["Tree_number_taxa"] = total_taxa
+    except Exception as error:
+        result["Tree_status"] = f"parse_failed:{error}"
+    return result
+
+
+def event_breakpoint_schemes(
+    row: Mapping[str, str], length: int, circular: bool
+) -> List[Tuple[str, int, int]]:
+    schemes: List[Tuple[str, int, int]] = []
+    rdp1 = optional_int(row.get("RDP_breakpoint_1"))
+    rdp2 = optional_int(row.get("RDP_breakpoint_2"))
+    if rdp1 is not None and rdp2 is not None:
+        schemes.append(("RDP", rdp1, rdp2))
+
+    bp1_start = optional_int(row.get("3SEQ_BP1_start"))
+    bp1_end = optional_int(row.get("3SEQ_BP1_end"))
+    bp2_start = optional_int(row.get("3SEQ_BP2_start"))
+    bp2_end = optional_int(row.get("3SEQ_BP2_end"))
+    if None not in (bp1_start, bp1_end, bp2_start, bp2_end):
+        three1 = interval_midpoint(bp1_start, bp1_end, length, circular)
+        three2 = interval_midpoint(bp2_start, bp2_end, length, circular)
+        schemes.append(("3SEQ", three1, three2))
+    return schemes
+
+
+TREE_SUMMARY_FIELDS = [
+    "Evidence_tier",
+    "Recombinant_accession",
+    "3SEQ_Event_ID",
+    "RDP_Event_ID",
+    "Breakpoint_scheme",
+    "Segment",
+    "Breakpoint_1",
+    "Breakpoint_2",
+    "Raw_segment_columns",
+    "Filtered_segment_columns",
+    "Number_sequences",
+    "Tree_status",
+    "Treefile",
+    "Nearest_selected_parent",
+    "Nearest_parent_roles",
+    "Patristic_distance",
+    "Nearest_parent_clade_support_raw",
+    "Nearest_parent_SH_aLRT",
+    "Nearest_parent_UFBoot",
+    "Nearest_parent_supported_bipartition_size",
+    "Tree_number_taxa",
+]
+
+
+def empty_tree_summary(
+    metadata: Mapping[str, object], treefile: object = ""
+) -> Dict[str, object]:
+    return {
+        **metadata,
+        "Treefile": str(treefile) if treefile else "",
+        "Nearest_selected_parent": "",
+        "Nearest_parent_roles": "",
+        "Patristic_distance": "",
+        "Nearest_parent_clade_support_raw": "",
+        "Nearest_parent_SH_aLRT": "",
+        "Nearest_parent_UFBoot": "",
+        "Nearest_parent_supported_bipartition_size": "",
+        "Tree_number_taxa": "",
+    }
+
+
+SWITCH_CALL_FIELDS = [
+    "Evidence_tier",
+    "Recombinant_accession",
+    "3SEQ_Event_ID",
+    "RDP_Event_ID",
+    "Breakpoint_scheme",
+    "Segment_A_nearest_parent",
+    "Segment_A_parent_roles",
+    "Segment_A_SH_aLRT",
+    "Segment_A_UFBoot",
+    "Segment_B_nearest_parent",
+    "Segment_B_parent_roles",
+    "Segment_B_SH_aLRT",
+    "Segment_B_UFBoot",
+    "Different_nearest_parents",
+    "RDP_parent_role_switch",
+    "RDP_role_orientation",
+    "3SEQ_parent_role_switch",
+    "Role_switch_evidence",
+    "Expected_role_switch",
+    "Number_supported_segments",
+    "Nearest_parent_switch_call",
+]
+
+
+def support_passes(row: Mapping[str, object], minimum_alrt: float, minimum_ufboot: float) -> bool:
+    alrt = optional_float(row.get("Nearest_parent_SH_aLRT", ""))
+    ufboot = optional_float(row.get("Nearest_parent_UFBoot", ""))
+    return (
+        alrt is not None
+        and ufboot is not None
+        and alrt >= minimum_alrt
+        and ufboot >= minimum_ufboot
+    )
+
+
+def build_switch_calls(
+    tree_rows: Sequence[Mapping[str, object]],
+    minimum_alrt: float,
+    minimum_ufboot: float,
+) -> List[Dict[str, object]]:
+    """Summarize whether the nearest selected parent switches between segments."""
+
+    grouped: Dict[Tuple[str, str, str, str], Dict[str, Mapping[str, object]]] = defaultdict(dict)
+    for row in tree_rows:
+        key = (
+            clean_text(row.get("Recombinant_accession", "")),
+            clean_text(row.get("3SEQ_Event_ID", "")),
+            clean_text(row.get("RDP_Event_ID", "")),
+            clean_text(row.get("Breakpoint_scheme", "")),
+        )
+        grouped[key][clean_text(row.get("Segment", ""))] = row
+
+    calls: List[Dict[str, object]] = []
+    for (_, _, _, scheme), segments in grouped.items():
+        segment_a = segments.get("A_between_breakpoints")
+        segment_b = segments.get("B_complement")
+        exemplar = segment_a or segment_b or {}
+        parent_a = clean_text(segment_a.get("Nearest_selected_parent", "")) if segment_a else ""
+        parent_b = clean_text(segment_b.get("Nearest_selected_parent", "")) if segment_b else ""
+        roles_a = set(clean_text(segment_a.get("Nearest_parent_roles", "")).split(";")) if segment_a else set()
+        roles_b = set(clean_text(segment_b.get("Nearest_parent_roles", "")).split(";")) if segment_b else set()
+        roles_a.discard("")
+        roles_b.discard("")
+        different = bool(parent_a and parent_b and parent_a != parent_b)
+        rdp_direct = different and "RDP_minor" in roles_a and "RDP_major" in roles_b
+        rdp_reverse = different and "RDP_major" in roles_a and "RDP_minor" in roles_b
+        rdp_switch = rdp_direct or rdp_reverse
+        three_switch = different and (
+            ("3SEQ_parent_1" in roles_a and "3SEQ_parent_2" in roles_b)
+            or ("3SEQ_parent_2" in roles_a and "3SEQ_parent_1" in roles_b)
+        )
+        if rdp_switch and three_switch:
+            role_evidence = "RDP_and_3SEQ"
+        elif rdp_switch:
+            role_evidence = "RDP"
+        elif three_switch:
+            role_evidence = "3SEQ"
+        else:
+            role_evidence = "None"
+        expected = rdp_switch or three_switch
+
+        supported = sum(
+            support_passes(row, minimum_alrt, minimum_ufboot)
+            for row in (segment_a, segment_b)
+            if row is not None
+        )
+        if not parent_a or not parent_b:
+            call = "Unavailable_or_tree_failed"
+        elif expected and supported == 2:
+            call = "Supported_expected_parent_switch"
+        elif expected:
+            call = "Candidate_expected_switch_low_or_missing_support"
+        elif different:
+            call = "Different_parents_but_roles_not_expected"
+        else:
+            call = "No_nearest_parent_switch"
+
+        calls.append(
+            {
+                "Evidence_tier": exemplar.get("Evidence_tier", ""),
+                "Recombinant_accession": exemplar.get("Recombinant_accession", ""),
+                "3SEQ_Event_ID": exemplar.get("3SEQ_Event_ID", ""),
+                "RDP_Event_ID": exemplar.get("RDP_Event_ID", ""),
+                "Breakpoint_scheme": scheme,
+                "Segment_A_nearest_parent": parent_a,
+                "Segment_A_parent_roles": ";".join(sorted(roles_a)),
+                "Segment_A_SH_aLRT": segment_a.get("Nearest_parent_SH_aLRT", "") if segment_a else "",
+                "Segment_A_UFBoot": segment_a.get("Nearest_parent_UFBoot", "") if segment_a else "",
+                "Segment_B_nearest_parent": parent_b,
+                "Segment_B_parent_roles": ";".join(sorted(roles_b)),
+                "Segment_B_SH_aLRT": segment_b.get("Nearest_parent_SH_aLRT", "") if segment_b else "",
+                "Segment_B_UFBoot": segment_b.get("Nearest_parent_UFBoot", "") if segment_b else "",
+                "Different_nearest_parents": different,
+                "RDP_parent_role_switch": rdp_switch,
+                "RDP_role_orientation": (
+                    "minor_to_major"
+                    if rdp_direct
+                    else "major_to_minor"
+                    if rdp_reverse
+                    else "not_applicable"
+                ),
+                "3SEQ_parent_role_switch": three_switch,
+                "Role_switch_evidence": role_evidence,
+                "Expected_role_switch": expected,
+                "Number_supported_segments": supported,
+                "Nearest_parent_switch_call": call,
+            }
+        )
+    return calls
+
+
+def process_event(
+    row: Mapping[str, str],
+    sequences: Mapping[str, str],
+    args: argparse.Namespace,
+    iqtree_executable: Optional[str],
+) -> Tuple[Dict[str, object], List[Dict[str, object]]]:
+    query = first_accession(row.get("Recombinant_accession", ""))
+    length = len(next(iter(sequences.values())))
+    circular = args.topology == "circular"
+    event_label = "__".join(
+        [
+            safe_name(row.get("Evidence_tier", "event")),
+            safe_name(query),
+            "RDP-" + safe_name(row.get("RDP_Event_ID", "NA")),
+            "3SEQ-" + safe_name(row.get("3SEQ_Event_ID", "NA")),
+        ]
+    )
+    event_dir = args.outdir / event_label
+    event_dir.mkdir(parents=True, exist_ok=True)
+
+    selected = select_event_sequences(
+        row,
+        sequences,
+        length,
+        circular,
+        args.rdp_candidates_per_role,
+        args.context_size,
+        args.curated_contexts,
+    )
+    if not selected.parents:
+        raise ValueError(f"No parental candidate from event {event_label} occurs in the alignment")
+
+    analysis_names = [query, *selected.parents, *selected.contexts]
+    write_fasta(event_dir / "simplot_input.fasta", {name: sequences[name] for name in analysis_names})
+    parent_rows = []
+    for parent in selected.parents:
+        parent_rows.append(
+            {
+                "Accession": parent,
+                "Roles": ";".join(selected.roles.get(parent, [])),
+                "Selection_identity_percent": f"{selected.scores.get(parent, math.nan):.6f}",
+            }
+        )
+    write_tsv(event_dir / "selected_parents.tsv", parent_rows, ["Accession", "Roles", "Selection_identity_percent"])
+
+    simplot_path = event_dir / "simplot_data.tsv"
+    bootscan_path = event_dir / "bootscan_data.tsv"
+    if args.reuse_existing and simplot_path.is_file():
+        simplot = pd.read_csv(simplot_path, sep="\t")
+    else:
+        simplot = simplot_table(
+            query,
+            selected.parents,
+            sequences,
+            args.window,
+            args.step,
+            circular,
+        )
+        simplot.to_csv(simplot_path, sep="\t", index=False)
+
+    if args.reuse_existing and bootscan_path.is_file():
+        bootscan = pd.read_csv(bootscan_path, sep="\t")
+    else:
+        bootscan = bootscan_table(
+            query,
+            selected.parents,
+            sequences,
+            args.window,
+            args.step,
+            args.bootstrap_replicates,
+            circular,
+            args.seed,
+            args.processes,
+        )
+        bootscan.to_csv(bootscan_path, sep="\t", index=False)
+
+    profile_outputs = [event_dir / f"simplot_bootscan.{extension}" for extension in args.formats]
+    if not args.reuse_existing or not all(path.is_file() for path in profile_outputs):
+        plot_profiles(
+            row,
+            query,
+            selected,
+            simplot,
+            bootscan,
+            length,
+            event_dir / "simplot_bootscan",
+            args.formats,
+        )
+
+    tree_rows: List[Dict[str, object]] = []
+    for scheme, breakpoint_1, breakpoint_2 in event_breakpoint_schemes(row, length, circular):
+        segment_a = arc_indices(breakpoint_1, breakpoint_2, length, circular)
+        segment_b = complement_indices(segment_a, length)
+        for segment_name, indices in (("A_between_breakpoints", segment_a), ("B_complement", segment_b)):
+            metadata: Dict[str, object] = {
+                "Evidence_tier": row.get("Evidence_tier", ""),
+                "Recombinant_accession": query,
+                "3SEQ_Event_ID": row.get("3SEQ_Event_ID", ""),
+                "RDP_Event_ID": row.get("RDP_Event_ID", ""),
+                "Breakpoint_scheme": scheme,
+                "Segment": segment_name,
+                "Breakpoint_1": breakpoint_1,
+                "Breakpoint_2": breakpoint_2,
+                "Raw_segment_columns": len(indices),
+                "Filtered_segment_columns": 0,
+                "Number_sequences": len(analysis_names),
+                "Tree_status": "not_requested",
+            }
+            segment_dir = event_dir / "segment_trees" / scheme
+            segment_dir.mkdir(parents=True, exist_ok=True)
+            segment_fasta = segment_dir / f"{segment_name}.fasta"
+            records = extract_records(analysis_names, sequences, indices)
+            filtered = filter_segment_columns(records, args.min_column_occupancy)
+            metadata["Filtered_segment_columns"] = len(next(iter(filtered.values()))) if filtered else 0
+            write_fasta(segment_fasta, filtered)
+
+            if metadata["Filtered_segment_columns"] < args.min_segment_length:
+                metadata["Tree_status"] = "skipped_short_segment"
+                tree_rows.append(empty_tree_summary(metadata))
+                continue
+
+            if args.run_iqtree and iqtree_executable:
+                tree_prefix = segment_dir / segment_name
+                status, treefile = run_iqtree(
+                    iqtree_executable,
+                    segment_fasta,
+                    tree_prefix,
+                    args.iqtree_model,
+                    args.ufboot,
+                    args.alrt,
+                    args.iqtree_threads,
+                    args.reuse_existing,
+                )
+                metadata["Tree_status"] = status
+                if status in {"completed", "reused"}:
+                    plot_tree(
+                        treefile,
+                        segment_dir / f"{segment_name}.tree",
+                        query,
+                        selected,
+                        args.formats,
+                    )
+                    tree_rows.append(summarize_tree(treefile, query, selected, metadata))
+                else:
+                    tree_rows.append(empty_tree_summary(metadata, treefile))
+            else:
+                tree_rows.append(empty_tree_summary(metadata))
+
+    event_summary = {
+        "Evidence_tier": row.get("Evidence_tier", ""),
+        "Recombinant_accession": query,
+        "3SEQ_Event_ID": row.get("3SEQ_Event_ID", ""),
+        "RDP_Event_ID": row.get("RDP_Event_ID", ""),
+        "Concordance_class": row.get("Concordance_class", ""),
+        "Parent_concordance": row.get("Parent_concordance", ""),
+        "Selected_parents": ";".join(selected.parents),
+        "Selected_parent_roles": "|".join(
+            f"{parent}:{','.join(selected.roles.get(parent, []))}" for parent in selected.parents
+        ),
+        "Context_sequences": ";".join(selected.contexts),
+        "Output_directory": str(event_dir),
+        "Status": "completed",
+    }
+    return event_summary, tree_rows
+
+
+EVENT_SUMMARY_FIELDS = [
+    "Evidence_tier",
+    "Recombinant_accession",
+    "3SEQ_Event_ID",
+    "RDP_Event_ID",
+    "Concordance_class",
+    "Parent_concordance",
+    "Selected_parents",
+    "Selected_parent_roles",
+    "Context_sequences",
+    "Output_directory",
+    "Status",
+]
+
+
+def parse_formats(value: str) -> List[str]:
+    formats = [item.strip().lower() for item in value.split(",") if item.strip()]
+    permitted = {"png", "pdf", "svg"}
+    invalid = sorted(set(formats) - permitted)
+    if invalid:
+        raise argparse.ArgumentTypeError(f"Unsupported formats: {', '.join(invalid)}")
+    return formats
+
+
+def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Generate SimPlot, BootScan and segment-phylogeny validation outputs.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument("--events", required=True, type=Path, help="Evidence-tier event TSV")
+    parser.add_argument("--alignment", required=True, type=Path, help="Common aligned FASTA")
+    parser.add_argument("--outdir", required=True, type=Path, help="Output directory")
+    parser.add_argument(
+        "--tiers",
+        default="Tier_B",
+        help="Comma-separated evidence tiers; use ALL to retain every matched event",
+    )
+    parser.add_argument("--topology", choices=("circular", "linear"), default="circular")
+    parser.add_argument("--window", type=int, default=200, help="Sliding-window width")
+    parser.add_argument("--step", type=int, default=20, help="Sliding-window step")
+    parser.add_argument("--bootstrap-replicates", type=int, default=100)
+    parser.add_argument("--processes", type=int, default=1, help="Parallel BootScan worker processes")
+    parser.add_argument("--seed", type=int, default=20260820)
+    parser.add_argument("--rdp-candidates-per-role", type=int, default=2)
+    parser.add_argument("--context-size", type=int, default=8)
+    parser.add_argument(
+        "--context-accessions",
+        type=Path,
+        help="Optional one-accession-per-line curated context set",
+    )
+    parser.add_argument("--min-column-occupancy", type=float, default=0.70)
+    parser.add_argument("--min-segment-length", type=int, default=100)
+    parser.add_argument("--formats", type=parse_formats, default=parse_formats("png,pdf"))
+    parser.add_argument("--max-events", type=int, help="Optional testing limit")
+    parser.add_argument("--run-iqtree", action="store_true", help="Run IQ-TREE after FASTA extraction")
+    parser.add_argument(
+        "--reuse-existing",
+        action="store_true",
+        help="Reuse existing profile tables, figures and IQ-TREE treefiles",
+    )
+    parser.add_argument("--iqtree-executable", default="iqtree2")
+    parser.add_argument("--iqtree-model", default="MFP")
+    parser.add_argument("--ufboot", type=int, default=1000)
+    parser.add_argument("--alrt", type=int, default=1000)
+    parser.add_argument("--iqtree-threads", type=int, default=1)
+    parser.add_argument("--validation-min-alrt", type=float, default=80.0)
+    parser.add_argument("--validation-min-ufboot", type=float, default=95.0)
+    args = parser.parse_args(argv)
+
+    if args.window < 10 or args.step < 1:
+        parser.error("--window must be >=10 and --step must be >=1")
+    if args.bootstrap_replicates < 1:
+        parser.error("--bootstrap-replicates must be >=1")
+    if args.processes < 1 or args.iqtree_threads < 1:
+        parser.error("process/thread counts must be >=1")
+    if not 0 < args.min_column_occupancy <= 1:
+        parser.error("--min-column-occupancy must be in (0,1]")
+    return args
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    args = parse_args(argv)
+    try:
+        if not args.events.is_file():
+            raise FileNotFoundError(f"Event table not found: {args.events}")
+        if not args.alignment.is_file():
+            raise FileNotFoundError(f"Alignment not found: {args.alignment}")
+
+        sequences, _ = read_fasta_alignment(args.alignment)
+        args.curated_contexts = (
+            read_accession_list(args.context_accessions)
+            if args.context_accessions is not None
+            else []
+        )
+        event_rows = read_event_table(args.events)
+        for row in event_rows:
+            row["Evidence_tier"] = infer_evidence_tier(row)
+        requested_tiers = {item.strip() for item in args.tiers.split(",") if item.strip()}
+        if "ALL" not in requested_tiers:
+            event_rows = [row for row in event_rows if row.get("Evidence_tier") in requested_tiers]
+        event_rows = [row for row in event_rows if row.get("Match_status", "Matched") == "Matched"]
+        if args.max_events is not None:
+            event_rows = event_rows[: args.max_events]
+        if not event_rows:
+            raise ValueError("No event remains after tier/status filtering")
+
+        iqtree_executable = resolve_iqtree(args.iqtree_executable) if args.run_iqtree else None
+        if args.run_iqtree and not iqtree_executable:
+            raise FileNotFoundError(
+                f"IQ-TREE executable not found: {args.iqtree_executable}; install iqtree or omit --run-iqtree"
+            )
+
+        args.outdir.mkdir(parents=True, exist_ok=True)
+        event_summaries: List[Dict[str, object]] = []
+        tree_summaries: List[Dict[str, object]] = []
+        failures = 0
+        for index, row in enumerate(event_rows, start=1):
+            query = first_accession(row.get("Recombinant_accession", ""))
+            print(f"[{index}/{len(event_rows)}] {query}", flush=True)
+            try:
+                event_summary, tree_rows = process_event(
+                    row, sequences, args, iqtree_executable
+                )
+                event_summaries.append(event_summary)
+                tree_summaries.extend(tree_rows)
+            except Exception as error:
+                failures += 1
+                eprint(f"WARNING: event {query or index} failed: {error}")
+                event_summaries.append(
+                    {
+                        "Evidence_tier": row.get("Evidence_tier", ""),
+                        "Recombinant_accession": query,
+                        "3SEQ_Event_ID": row.get("3SEQ_Event_ID", ""),
+                        "RDP_Event_ID": row.get("RDP_Event_ID", ""),
+                        "Concordance_class": row.get("Concordance_class", ""),
+                        "Parent_concordance": row.get("Parent_concordance", ""),
+                        "Selected_parents": "",
+                        "Selected_parent_roles": "",
+                        "Context_sequences": "",
+                        "Output_directory": "",
+                        "Status": f"failed:{error}",
+                    }
+                )
+
+        write_tsv(args.outdir / "validation_manifest.tsv", event_summaries, EVENT_SUMMARY_FIELDS)
+        write_tsv(args.outdir / "segment_tree_summary.tsv", tree_summaries, TREE_SUMMARY_FIELDS)
+        switch_calls = build_switch_calls(
+            tree_summaries,
+            args.validation_min_alrt,
+            args.validation_min_ufboot,
+        )
+        write_tsv(
+            args.outdir / "event_validation_calls.tsv",
+            switch_calls,
+            SWITCH_CALL_FIELDS,
+        )
+        print(f"Events requested : {len(event_rows)}")
+        print(f"Events completed : {len(event_rows) - failures}")
+        print(f"Events failed    : {failures}")
+        print(f"Manifest         : {args.outdir / 'validation_manifest.tsv'}")
+        print(f"Tree summary     : {args.outdir / 'segment_tree_summary.tsv'}")
+        print(f"Validation calls : {args.outdir / 'event_validation_calls.tsv'}")
+        return 1 if failures else 0
+    except (OSError, ValueError) as error:
+        eprint(f"ERROR: {error}")
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
