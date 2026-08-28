@@ -1,4 +1,4 @@
-# vipan — Sweepovirus recombination validation workflow
+# Sweepovirus recombination validation workflow
 
 Reproducible, auditable Snakemake workflow for detecting, filtering, and
 phylogenetically validating recombination events in sweet

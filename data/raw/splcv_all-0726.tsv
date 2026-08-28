@@ -1,0 +1,370 @@
+accession	organism	length	country	lat_lon	host	collection_date	isolate
+PZ378315.1	Begomovirus ipomoeae	2799	Dominican Republic	N/A	Solanum lycopersicum	2025	SPLCV_T3_RD
+PZ319899.1	Sweetpotato leaf curl virus	2829	Pakistan	N/A	Sweetpotato	28-Oct-2022	Pak2
+PZ319898.1	Sweetpotato leaf curl virus	2829	Pakistan	N/A	Sweetpotato	28-Oct-2022	Pak1
+PZ231954.1	Begomovirus ipomoeachinaense	2791	Indonesia	N/A	Ipomea batatas	04-Apr-2025	SPLCCNV-SMN-B-2025
+PZ231953.1	Begomovirus ipomoeae	2817	Indonesia	N/A	Ipomea batatas	02-Mar-2025	SPLCV-MGL-A-2025
+PZ111966.1	Sweet potato leaf curl virus	2829	Bangladesh	N/A	Ipomoea batatas (sweet potato)	18-Feb-2025	SPV-39
+PX737877.1	Sweet potato leaf curl virus	2842	China	N/A	Ipomoea batatas	Mar-2025	GS25-37
+PV947756.1	Sweet potato leaf curl virus	2829	Burkina Faso	11.08 N 0.90 W	Ipomoea batatas	16-Apr-2016	Tie_BFA316
+PV947755.1	Sweet potato leaf curl virus	2829	Burkina Faso	11.08 N 0.90 W	Ipomoea batatas	16-Apr-2016	Tie_BFA314
+PV947754.1	Sweet potato leaf curl virus	2829	Burkina Faso	11.08 N 0.90 W	Ipomoea batatas	16-Apr-2016	Tie_BFA313
+PV947753.1	Sweet potato leaf curl virus	2825	Burkina Faso	11.08 N 0.90 W	Ipomoea batatas	16-Apr-2016	Tie_BFA310
+PV947752.1	Sweet potato leaf curl virus	2829	Burkina Faso	11.08 N 0.90 W	Ipomoea batatas	16-Apr-2016	Tie_BFA308
+PV947751.1	Sweet potato leaf curl virus	2827	Burkina Faso	11.12 N 0.96 W	Ipomoea batatas	16-Apr-2016	Tie_BFA301
+PV947750.1	Sweet potato leaf curl virus	2828	Burkina Faso	11.12 N 0.96 W	Ipomoea batatas	15-Apr-2016	Tie_BFA266
+PV947749.1	Sweet potato leaf curl virus	2828	Burkina Faso	11.12 N 0.96 W	Ipomoea batatas	15-Apr-2016	Tie_BFA255
+PV947748.1	Sweet potato leaf curl virus	2829	Burkina Faso	11.13 N 0.97 W	Ipomoea batatas	15-Apr-2016	Tie_BFA224
+PV947747.1	Sweet potato leaf curl virus	2804	Burkina Faso	10.93 N 5.09 W	Ipomoea batatas	27-Jul-2016	Sam_BFA622
+PV947746.1	Sweet potato leaf curl virus	2828	Burkina Faso	10.93 N 5.09 W	Ipomoea batatas	27-Jul-2016	Sam_BFA608
+PV947745.1	Sweet potato leaf curl virus	2829	Burkina Faso	10.94 N 5.11 W	Ipomoea batatas	24-Mar-2016	Sam_BFA150
+PV947744.1	Sweet potato leaf curl virus	2829	Burkina Faso	11.05 N 2.11 W	Ipomoea batatas	17-May-2016	Leo_BFA440
+PV947743.1	Sweet potato leaf curl virus	2829	Burkina Faso	10.94 N 5.29 W	Ipomoea batatas	29-Jul-2016	Kan_BFA773
+PV947742.1	Sweet potato leaf curl virus	2828	Burkina Faso	11.05 N 5.23 W	Ipomoea batatas	29-Jul-2016	Kan_BFA758
+PV947741.1	Sweet potato leaf curl virus	2828	Burkina Faso	10.83 N 5.19 W	Ipomoea batatas	28-Jul-2016	Kan_BFA692
+PV947740.1	Sweet potato leaf curl virus	2828	Burkina Faso	10.87 N 5.16 W	Ipomoea batatas	28-Jul-2016	Kan_BFA662
+PV947739.1	Sweet potato leaf curl virus	2827	Burkina Faso	10.86 N 5.16 W	Ipomoea batatas	28-Jul-2016	Kan_BFA641
+PV947738.1	Sweet potato leaf curl virus	2828	Burkina Faso	10.86 N 5.16 W	Ipomoea batatas	28-Jul-2016	Kan_BFA638
+PV947737.1	Sweet potato leaf curl virus	2828	Burkina Faso	10.85 N 5.17 W	Ipomoea batatas	24-Mar-2016	Kan_BFA160
+PV947736.1	Sweet potato leaf curl virus	2824	Burkina Faso	10.65 N 5.11 W	Ipomoea batatas	11-Aug-2016	Dou_BFA1047
+PV947735.1	Sweet potato leaf curl virus	2828	Burkina Faso	13.16 N 3.40 W	Ipomoea batatas	13-May-2016	Di_BFA386
+PV947734.1	Sweet potato leaf curl virus	2827	Burkina Faso	12.06 N 0.21 E	Ipomoea batatas	29-Apr-2016	Dia_BFA496
+PV947733.1	Sweet potato leaf curl virus	2828	Burkina Faso	11.16 N 3.07 W	Ipomoea batatas	27-Aug-2016	Dan_BFA1298
+PV947732.1	Sweet potato leaf curl virus	2829	Burkina Faso	10.65 N 4.76 W	Ipomoea batatas	16-Aug-2016	Ban_BFA1094
+PV947731.1	Sweet potato leaf curl virus	2828	Burkina Faso	11.46 N 0.53 W	Ipomoea batatas	06-May-2016	Bag_BFA362
+PV947730.1	Sweet potato leaf curl virus	2828	Burkina Faso	11.46 N 0.53 W	Ipomoea batatas	06-May-2016	Bag_BFA351
+PV947729.1	Sweet potato leaf curl virus	2828	Burkina Faso	11.46 N 0.53 W	Ipomoea batatas	06-May-2016	Bag_BFA334
+PX352917.1	Sweet potato leaf curl virus	2852	Burkina Faso	11.223 N 4.167 W	Ipomea alba	Mar-2016	BF36_6_B_2
+PX352916.1	Sweet potato leaf curl virus	2857	Burkina Faso	11.223 N 4.167 W	Ipomea alba	Mar-2016	BF09102020_5_B_1
+KU323597.1	Sweet potato leaf curl Shandong virus	2826	China	N/A	Ipomoea batatas	Oct-2014	SPLCV-SD
+FJ969831.1	Sweet potato mosaic virus	2803	Brazil	N/A	Ipomoea batatas	N/A	BR:BSB1
+AF326775.1	Sweet potato leaf curl Georgia virus	2773	Unknown	N/A	N/A	N/A	N/A
+PV299599.1	Sweet potato leaf curl virus	2767	China	N/A	sweet potato	Jun-2023	BYGS
+PQ507555.1	Sweet potato leaf curl virus	2769	Thailand	N/A	Ipomoea batatas	08-Apr-2022	SP4-3
+PQ507554.1	Sweet potato leaf curl virus	2769	Thailand	N/A	Ipomoea batatas	08-Apr-2022	SP4-1
+PP583540.1	Sweet potato leaf curl virus	2826	China	N/A	sweet potato	01-Dec-2023	MM01
+OR866203.1	Sweet potato leaf curl virus	2828	Trinidad and Tobago	N/A	sweet potato	May-2017	868-SPLCV-I
+OR866202.1	Sweet potato leaf curl virus	2821	Trinidad and Tobago	N/A	sweet potato	May-2017	TT-SPLCV-I
+OR344912.1	Sweet potato leaf curl virus	2828	Peru	N/A	Ipomoea batatas; cultivar BredLine	12-Oct-2006	sp54
+OR220815.1	Sweet potato leaf curl virus	2815	India	N/A	sweet potato	24-Sep-2022	Ker-[SP:63]
+OR220814.1	Sweet potato leaf curl virus	2840	India	N/A	sweet potato	06-Aug-2022	Ker-[SP:53]
+OR220813.1	Sweet potato leaf curl virus	2840	India	N/A	sweet potato	24-Sep-2022	Ker-[SP:52]
+OR220812.1	Sweet potato leaf curl virus	2841	India	N/A	sweet potato	24-Sep-2022	Ker-[SP:41]
+OR220811.1	Sweet potato leaf curl virus	2840	India	N/A	Sweet potato	06-Aug-2022	Ker-[SP:7]
+OR220810.1	Sweet potato leaf curl virus	2827	India	N/A	Ipomea batatas	N/A	Kerala-Tvm
+OQ551734.1	Sweet potato leaf curl Hubei virus	2761	China	N/A	Calystegia hederacea	May-2021	CH2
+OQ551733.1	Sweet potato leaf curl Hubei virus	2763	China	N/A	Calystegia hederacea	May-2021	CH1
+NC_075421.1	Sweet potato leaf curl virus	2826	China	N/A	Ipomoea batatas	Oct-2014	SPLCV-SD
+ON055398.1	Sweet potato leaf curl virus	2784	Greece	N/A	Ipomoea batatas	2018	SPLCV-SP1
+OK067241.1	Sweet potato leaf curl Sichuan virus 2	2769	China	N/A	Ipomoea batatas	20-Sep-2019	HN-52
+MZ476980.1	Sweet potato leaf curl virus	2802	Tanzania	N/A	Ipomea batatas (L.) Lam	29-Oct-2019	TZ:SHZPU:2019
+MZ476979.1	Sweet potato leaf curl virus	2769	Tanzania	N/A	Ipomea batatas (L.) Lam	29-Oct-2019	TZ:SHZPT:2019
+MZ476978.1	Sweet potato leaf curl virus	2802	Tanzania	N/A	Ipomea batatas (L.) Lam	28-Aug-2019	TZ:MVRPU:2019
+MZ476977.1	Sweet potato leaf curl virus	2767	Tanzania	N/A	Ipomea batatas (L.) Lam	28-Aug-2019	TZ:MVRT75:2019
+MZ476976.1	Sweet potato leaf curl virus	2770	Tanzania	N/A	Ipomea batatas (L.) Lam	12-Dec-2018	TZ:GTA1:2018
+MZ476975.1	Sweet potato leaf curl virus	2820	Tanzania	N/A	Ipomea batatas (L.) Lam	12-Aug-2018	TZ:CHALU2-4:2018
+MZ476974.1	Sweet potato leaf curl virus	2769	Tanzania	N/A	Ipomea batatas (L.) Lam	29-Oct-2019	TZ:ARUP:2019
+MZ462998.1	Sweet potato leaf curl virus	2824	Tanzania	N/A	Ipomea batatas (L.) Lam	12-Aug-2018	TZ:CHALS2-4:2018
+MZ462997.1	Sweet potato leaf curl virus	2782	Tanzania	N/A	Ipomea batatas (L.) Lam	28-Aug-2019	TZ:MVRU7-5:2019
+MZ462996.1	Sweet potato leaf curl virus	2769	Tanzania	N/A	Ipomea batatas (L.) Lam	28-Aug-2019	TZ:MVRPT:2019
+MW779525.1	Sweet potato leaf curl virus	2827	China	N/A	sweet potato	19-May-2019	GS02
+MW811206.1	Sweet potato leaf curl Sao Paulo virus	2769	Tanzania	N/A	Ipomea batatas (L.) Lam	23-Aug-2019	TZ:sh MVR7-5:2019
+OM287440.1	Sweet potato leaf curl virus	2827	China	N/A	Ipomoea purpurea	05-Sep-2021	Hubei
+MW021476.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	21-Oct-2018	Hunan:77
+MW021475.1	Sweet potato leaf curl virus	2833	China	N/A	sweet potato	21-Oct-2018	Hunan:6-68
+MW021474.1	Sweet potato leaf curl virus	2773	China	N/A	sweet potato	21-Oct-2018	Hunan:8-47
+MW021473.1	Sweet potato leaf curl virus	2833	China	N/A	sweet potato	21-Oct-2018	Hunan:6-A5
+MW021472.1	Sweet potato leaf curl virus	2833	China	N/A	sweet potato	21-Oct-2018	Hunan:6-1
+MW574052.1	Sweet potato leaf curl virus	2779	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM8384_ii61-15
+MW574051.1	Sweet potato mosaic virus	2809	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM8357_ii50-15
+MW574050.1	Sweet potato leaf curl virus	2781	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM8345_ii57-15
+MW574049.1	Sweet potato leaf curl virus	2773	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM8344_ii53-15
+MW574048.1	Sweet potato leaf curl virus	2790	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7569_ii22-15
+MW574047.1	Sweet potato leaf curl virus	2780	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7868_ii64-15
+MW574046.1	Sweet potato leaf curl virus	2785	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7865_ii35-15
+MW574045.1	Sweet potato leaf curl virus	2778	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7861_ii26-15
+MW574044.1	Sweet potato mosaic virus	2781	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7844_ii58-15
+MW574043.1	Sweet potato mosaic virus	2781	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7842_ii56-15
+MW574042.1	Sweet potato leaf curl virus	2779	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7806_ii51-15
+MW574041.1	Sweet potato mosaic virus	2781	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7805_ii47-15
+MW574040.1	Sweet potato leaf curl virus	2791	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7681_ii43-15
+MW574039.1	Sweet potato leaf curl virus	2779	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7628_ii42-15
+MW574038.1	Sweet potato leaf curl virus	2779	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7627_ii40-15
+MW574037.1	Sweet potato leaf curl virus	2783	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7610_ii38-15
+MW574036.1	Sweet potato leaf curl virus	2780	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7609_ii34-15
+MW574035.1	Sweet potato leaf curl virus	2779	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7608_ii31-15
+MW574034.1	Sweet potato leaf curl virus	2768	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7607_ii28-15
+MW574033.1	Sweet potato leaf curl virus	2774	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7606_ii25-15
+MW574032.1	Sweet potato leaf curl virus	2775	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7573_ii30-15
+MW574031.1	Sweet potato mosaic virus	2781	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7572_ii27-15
+MW574030.1	Sweet potato leaf curl virus	2791	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7570_ii23-15
+MW574029.1	Sweet potato leaf curl virus	2796	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7568_ii21-15
+MW574028.1	Sweet potato leaf curl virus	2779	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7328_ii9-15
+MW574027.1	Sweet potato leaf curl virus	2767	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7327_ii9-15
+MW574026.1	Sweet potato leaf curl virus	2778	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7303_ii14-15
+MW574025.1	Sweet potato leaf curl virus	2778	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7300_ii13-15
+MW574024.1	Sweet potato leaf curl virus	2778	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7297_ii12-15
+MW574023.1	Sweet potato leaf curl virus	2767	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7295_ii11-15
+MW574022.1	Sweet potato leaf curl virus	2767	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7294_ii10-15
+MW574021.1	Sweet potato mosaic virus	2783	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7286_ii8-15
+MW574020.1	Sweet potato leaf curl virus	2776	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7283_ii7-15
+MW574019.1	Sweet potato leaf curl virus	2776	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7317_ii6-15
+MW574018.1	Sweet potato leaf curl virus	2776	Spain	N/A	Ipomoea indica	Feb-2015	ES-LM7275_ii3-15
+NC_055494.1	Sweet potato leaf curl Hubei virus	2774	China	N/A	sweet potato	10-May-2017	Hubei22-2017
+MT587567.1	Sweet potato leaf curl virus	2829	Israel	N/A	sweetpotato cv Beauregard	Nov-2017	N/A
+MW678598.1	Sweet potato leaf curl virus	2809	China	N/A	Sweet potato	11-Jun-2020	GS01
+MK931305.1	Sweet potato leaf curl Hubei virus	2762	Unknown	N/A	N/A	N/A	Hunan13-2017
+MK931304.1	Sweet potato leaf curl Hubei virus	2761	China	N/A	sweet potato	14-May-2017	Shandong7-2017
+MN909043.1	Sweet potato leaf curl Georgia virus	2770	China	N/A	sweet potato	12-Jul-2013	2013
+MN909042.1	Sweet potato leaf curl virus	2817	China	N/A	Ipomoea triloba	16-Aug-2012	N/A
+MH388496.1	Sweet potato leaf curl virus	2829	South Korea	N/A	Ipomoea batatas	12-Jul-2017	GS
+MH602270.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	N/A	XU17_5
+MH602269.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	N/A	XU14_2
+MH602268.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	N/A	XU13_1
+MH602267.1	Sweet potato leaf curl virus	2844	China	N/A	sweet potato	N/A	XU12_4
+MH602266.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	N/A	XU12_2
+MH602265.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	N/A	XU11_3
+MH602264.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	N/A	XU11_2
+MH602263.1	Sweet potato leaf curl virus	2833	China	N/A	sweet potato	N/A	XU10_14
+MH602262.1	Sweet potato leaf curl virus	2833	China	N/A	sweet potato	N/A	XU10_12
+MH602261.1	Sweet potato leaf curl virus	2833	China	N/A	sweet potato	N/A	XU10_11
+MH602260.1	Sweet potato leaf curl virus	2833	China	N/A	sweet potato	N/A	XU10_6
+MH602259.1	Sweet potato leaf curl virus	2834	China	N/A	sweet potato	N/A	XU3_18
+MH602258.1	Sweet potato leaf curl virus	2843	China	N/A	sweet potato	N/A	XU3_17
+MH602257.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	N/A	XU9_2
+MH602256.1	Sweet potato leaf curl virus	2843	China	N/A	sweet potato	N/A	XU9_1
+MH602255.1	Sweet potato leaf curl virus	2834	China	N/A	sweet potato	N/A	XU8_3
+MH602254.1	Sweet potato leaf curl virus	2834	China	N/A	sweet potato	N/A	XU8_2
+MH602253.1	Sweet potato leaf curl virus	2834	China	N/A	sweet potato	N/A	XU7_3
+MH602252.1	Sweet potato leaf curl virus	2833	China	N/A	sweet potato	N/A	XU7_2
+MH602251.1	Sweet potato leaf curl virus	2844	China	N/A	sweet potato	N/A	XU5_3
+MH602250.1	Sweet potato leaf curl virus	2828	China	N/A	sweet potato	N/A	XU4_2
+MH602249.1	Sweet potato leaf curl virus	2810	China	N/A	sweet potato	N/A	XU2_3
+MH602248.1	Sweet potato leaf curl virus	2811	China	N/A	sweet potato	N/A	XU2_1
+MH602247.1	Sweet potato leaf curl virus	2844	China	N/A	sweet potato	N/A	XU1_3
+MK951976.1	Sweet potato leaf curl Hubei virus	2765	China	N/A	sweet potato	24-May-2017	Jiangsu8-2017
+MK951975.1	Sweet potato leaf curl Hubei virus	2765	China	N/A	sweet potato	27-Jun-2017	Jiangsu43-2017
+MK951974.1	Sweet potato leaf curl Hubei virus	2764	China	N/A	sweet potato	22-May-2017	Jiangsu1-2017
+MK951973.1	Sweet potato leaf curl Hubei virus	2764	China	N/A	sweet potato	06-May-2017	Shandong2-2017
+MK951972.1	Sweet potato leaf curl Hubei virus	2786	China	N/A	sweet potato	23-May-2017	Hebei20-2017
+MK951971.1	Sweet potato leaf curl Hubei virus	2775	China	N/A	sweet potato	18-May-2017	Hubei28-2017
+MK951970.1	Sweet potato leaf curl Hubei virus	2775	China	N/A	sweet potato	10-May-2017	Hubei25-2017
+MK951969.1	Sweet potato leaf curl Hubei virus	2774	China	N/A	sweet potato	29-Nov-2018	Yunnan7-2018
+NC_043433.1	Sweet potato golden vein Korea virus	2807	South Korea	N/A	sweet potato	2012	102_SPGVaV
+MK052988.1	Sweet potato leaf curl virus	2822	China	N/A	sweet potato	16-Aug-2017	Hunan:21-5
+MK052987.1	Sweet potato leaf curl virus	2832	China	N/A	sweet potato	16-Aug-2017	Hunan:41-56
+MK052986.1	Sweet potato leaf curl virus	2796	China	N/A	sweet potato	16-Aug-2017	Hunan:61-26
+MK052985.1	Sweet potato leaf curl virus	2794	China	N/A	sweet potato	16-Aug-2017	Hunan:194
+MK052984.1	Sweet potato leaf curl virus	2770	China	N/A	sweet potato	16-Aug-2017	Hunan:8-76
+MK052983.1	Sweet potato leaf curl virus	2769	China	N/A	sweet potato	16-Aug-2017	Hunan:5-1
+MK052982.1	Sweet potato leaf curl virus	2834	China	N/A	sweet potato	16-Aug-2017	Hunan:3-3
+MH577011.1	Sweet potato leaf curl Hubei virus	2774	China	N/A	sweet potato	10-May-2017	Hubei22-2017
+KX033435.1	Sweet potato leaf curl Canary virus	2837	China	N/A	sweet potato	07-Jun-2015	China/Tanghe26-8/2015
+KX033430.1	Sweet potato leaf curl Canary virus	2837	China	N/A	sweet potato	09-Jun-2015	China/Tanghe27-22/2015
+KU992909.1	Sweet potato leaf curl Canary virus	2837	China	N/A	sweet potato	07-Jun-2015	China/Zhengzhou42/2015
+KJ476510.2	Sweet potato leaf curl Guangxi virus	2831	China	N/A	sweet potato	N/A	China:Guangxi5:2011
+KJ476509.2	Sweet potato leaf curl Henan4 virus	2826	China	N/A	sweet potato	N/A	China:Henan4:2012
+KJ476507.1	Sweet potato leaf curl Henan virus	2785	China	N/A	sweet potato	N/A	China:Henan10(2):2012
+KF156759.1	Sweet potato leaf curl Sichuan virus 2	2786	China	N/A	Ipomoea batatas	May-2012	China:Sichuan14:2012
+KF040466.1	Sweet potato leaf curl virus	2826	China	N/A	Ipomoea batatas	May-2012	China:Shandong11:2012
+KF040465.1	Sweet potato leaf curl virus	2831	China	N/A	Ipomoea batatas	May-2012	China:Henan25(8):2012
+KF040464.1	Sweet potato leaf curl virus	2836	China	N/A	Ipomoea batatas	N/A	China:Sichuan15(2):2012
+NC_038466.1	Sweet potato mosaic virus - [Brazil:Brasilia1:2007]	2803	Brazil	N/A	Ipomoea batatas	N/A	BR:BSB1
+NC_038465.1	Sweet potato leaf curl Sichuan virus 1	2764	China	N/A	Ipomoea batatas	May-2012	China:Sichuan15:2012
+NC_038464.1	Sweet potato leaf curl China virus	2771	China	N/A	N/A	N/A	N/A
+KT992056.1	Sweet potato golden vein Korea virus	2807	South Korea	N/A	sweet potato	2012	102_SPGVaV
+NC_033334.1	Sweet potato mosaic virus	2781	South Africa	31.783500 S 18.616500 E	Ipomoea batatas	27-Jan-2013	KT10BII
+NC_025681.1	Sweet potato leaf curl Sao Paulo virus	2782	Brazil	22.00 S 51.27 W	Ipomoea batatas	2009	SPLCSPV-[BR:AlvM:09]
+NC_024693.1	Sweet potato leaf curl Guangxi virus	2831	China	N/A	sweet potato	N/A	China:Guangxi5:2011
+NC_022586.1	Sweet potato leaf curl Sichuan virus 2	2786	China	N/A	Ipomoea batatas	May-2012	China:Sichuan14:2012
+NC_021719.1	Sweet potato leaf curl Henan virus	2766	China	N/A	N/A	May-2012	China:Henan10:2012
+NC_015324.1	Sweet potato golden vein associated virus	2824	USA	N/A	Ipomoea batatas	2007	US:MS:1B-3
+NC_015317.1	Sweet potato leaf curl South Carolina virus	2782	USA	N/A	Ipomoea batatas	2006	US:SC:648B-9
+NC_013640.2	Sweet potato leaf curl Bengal virus	2823	India	N/A	Ipomoea batatas	N/A	SPLCV-BCKV-India
+NC_013022.2	Ipomoea yellow vein virus	2791	Spain	N/A	Ipomoea indica	Jun-2006	ES:Mal:IG1:06
+NC_013467.1	Sweet potato leaf curl Lanzarote virus	2814	Spain	N/A	Ipomoea batatas	Sep-2006	ES:MAL:BG30:06
+NC_013465.1	Sweet potato leaf curl Canary virus	2807	Spain	N/A	Ipomoea batatas	2002	ES:CI:BG25:02
+NC_011052.2	Sweet potato leaf curl Spain virus	2780	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG1:02
+NC_004650.1	Sweet potato leaf curl virus	2828	USA	N/A	N/A	N/A	N/A
+NC_004640.1	Sweet potato leaf curl Georgia virus	2773	Unknown	N/A	N/A	N/A	16
+MF359271.1	Sweet potato mosaic virus	2782	South Africa	N/A	Ipomoea batatas	Feb-2013	TMBLP_ZA
+MF359270.1	Sweet potato mosaic virus	2780	South Africa	N/A	Ipomoea batatas	Feb-2013	ELLP_ZA
+MF359269.1	Sweet potato mosaic virus	2783	South Africa	N/A	Ipomoea batatas	Feb-2013	RDGP_ZA
+MF359268.1	Sweet potato mosaic virus	2781	South Africa	N/A	Ipomoea batatas	Feb-2013	SSB1_ZA
+MF359267.1	Sweet potato leaf curl virus	2805	South Africa	N/A	Ipomoea batatas	Feb-2013	TMBLP_ZA
+MF359266.1	Sweet potato leaf curl Sao Paulo virus	2768	South Africa	N/A	Ipomoea batatas	Feb-2013	TanzNMP_ZA
+MF359265.1	Sweet potato leaf curl Sao Paulo virus	2769	South Africa	N/A	Ipomoea batatas	Feb-2013	TanzELLP_ZA
+MF359264.1	Sweet potato leaf curl Sao Paulo virus	2769	South Africa	N/A	Ipomoea batatas	Feb-2013	RDGP_ZA
+MF359263.1	Sweet potato leaf curl Sao Paulo virus	2770	South Africa	N/A	Ipomoea batatas	Feb-2013	SSB1_ZA
+HQ393447.1	Sweet potato leaf curl virus	2834	Brazil	12.04 S 41.05 W	Ipomoea batatas	2008	SPGVaV-RO[BR:Uti:08]
+FJ969830.1	Sweet potato leaf curl virus	2834	Brazil	N/A	Ipomoea batatas	N/A	PB1-[BR:Sou1]
+FJ969829.1	Sweet potato leaf curl virus	2831	Brazil	N/A	Ipomoea batatas	N/A	PA [BR:Bel1]
+MG254543.1	Sweet potato leaf curl virus	2803	Portugal	N/A	Ipomoea indica	Aug-2017	P2I3-11
+MG254542.1	Sweet potato leaf curl virus	2803	Portugal	N/A	Ipomoea indica	Aug-2017	P2I3-8
+KY783941.1	Sweet potato leaf curl virus	2827	China	N/A	Sweet potato	08-Oct-2016	HuNan
+KC488316.1	Sweet potato leaf curl Sichuan virus 1	2764	China	N/A	Ipomoea batatas	May-2012	China:Sichuan15:2012
+DQ512731.1	Sweet potato leaf curl China virus	2771	China	N/A	N/A	N/A	N/A
+KX611145.1	Sweet potato leaf curl Georgia virus	2768	Argentina	N/A	sweet potato (cultivar Arapey INIA)	N/A	AR_MDZ
+KY270782.1	Sweet potato leaf curl virus	2829	Sudan	N/A	sweet potato	Oct-2016	409
+KY270781.1	Sweet potato leaf curl virus	2828	Sudan	N/A	sweet potato	Oct-2016	402
+KX859239.1	Sweet potato mosaic virus	2781	South Africa	31.783500 S 18.616500 E	Ipomoea batatas	27-Jan-2013	KT10BII
+KX859238.1	Sweet potato leaf curl Sao Paulo virus	2769	South Africa	31.783500 S 18.616500 E	Ipomoea batatas	27-Jan-2013	KT10AII
+KT992067.1	Sweet potato leaf curl virus	2828	South Korea	N/A	sweet potato	2012	212-SPLCV-I
+KT992066.1	Sweet potato leaf curl virus	2787	South Korea	N/A	sweet potato	2012	203-SPLCV-II
+KT992065.1	Sweet potato leaf curl virus	2786	South Korea	N/A	sweet potato	2012	202-SPLCV-II
+KT992064.1	Sweet potato leaf curl virus	2828	South Korea	N/A	sweet potato	2012	185-SPLCV-I
+KT992063.1	Sweet potato leaf curl virus	2787	South Korea	N/A	sweet potato	2012	178-SPLCV-II
+KT992062.1	Sweet potato leaf curl virus	2787	South Korea	N/A	sweet potato	2012	169-SPLCV-II
+KT992061.1	Sweet potato leaf curl virus	2828	South Korea	N/A	sweet potato	2012	156-SPLCV-I
+KT992060.1	Sweet potato leaf curl virus	2786	South Korea	N/A	sweet potato	2012	137-SPLCV-II
+KT992059.1	Sweet potato leaf curl virus	2829	South Korea	N/A	sweet potato	2012	135_group_I
+KT992058.1	Sweet potato leaf curl virus	2828	South Korea	N/A	sweet potato	2012	113-SPLCV-I
+KT992057.1	Sweet potato leaf curl virus	2787	South Korea	N/A	sweet potato	2012	103-SPLCV-II
+KT992055.1	Sweet potato leaf curl virus	2844	South Korea	N/A	sweet potato	2012	100-SPLCV-RS
+KT992054.1	Sweet potato leaf curl virus	2787	South Korea	N/A	sweet potato	2012	85-SPLCV-II
+KT992053.1	Sweet potato leaf curl virus	2829	South Korea	N/A	sweet potato	2012	72-SPLCV-I
+KT992052.1	Sweet potato leaf curl virus	2787	South Korea	N/A	sweet potato	2012	55-SPLCV-II
+KT992051.1	Sweet potato leaf curl virus	2828	South Korea	N/A	sweet potato	2012	54-SPLCV-I
+KT992050.1	Sweet potato leaf curl virus	2830	South Korea	N/A	sweet potato	2012	51_group_I
+KT992049.1	Sweet potato leaf curl virus	2829	South Korea	N/A	sweet potato	2012	17-SPLCV-I
+KT992048.1	Sweet potato leaf curl virus	2787	South Korea	N/A	sweet potato	2012	7-SPLCV-II
+AF104036.1	Sweet potato leaf curl virus	2828	USA	N/A	N/A	N/A	N/A
+KU511271.1	Sweet potato leaf curl virus	2782	Spain	N/A	Ipomoea batatas	10-Jan-2014	SPLCV AM-MB2
+KT099145.1	Sweet potato leaf curl virus	2765	Spain	N/A	unidentified plant	Sep-2011	Sp3-2
+KT099144.1	Sweet potato leaf curl virus	2829	Spain	N/A	unidentified plant	Sep-2011	Sp2-2
+KT099143.1	Sweet potato leaf curl virus	2823	Puerto Rico	N/A	unidentified plant	Nov-2010	PR11-2
+KT099140.1	Sweet potato leaf curl virus	2788	Puerto Rico	N/A	unidentified plant	Nov-2010	PR10-3
+KT099133.1	Sweet potato leaf curl virus	2804	Puerto Rico	N/A	unidentified plant	Nov-2010	PR3-1
+KT202303.1	Sweet potato leaf curl virus	2827	China	N/A	Ipomoea batatas	May-2014	Fujian-fz001
+KC907406.1	Sweet potato leaf curl Henan virus	2766	China	N/A	N/A	May-2012	China:Henan10:2012
+KC253238.1	Sweet potato leaf curl virus	2828	Saint Vincent and the Grenadines	N/A	Ipomoea batatas	01-Jul-2010	SPLCV-US[StV:10]
+KC253237.1	Sweet potato leaf curl virus	2784	Mexico	N/A	Ipomoea batatas	01-Jul-2010	SPLCV-MEX[MEX:10]
+KC253236.1	Sweet potato leaf curl Georgia virus	2769	Cuba	N/A	Ipomoea batatas	01-Jul-2010	SPLCGoV[CUB:10]
+KC253235.1	Sweet potato leaf curl virus	2767	Jamaica	N/A	Ipomoea batatas	01-Jul-2010	SPLCV-JAM[JAM:10]
+KC253234.1	Sweet potato leaf curl virus	2828	Peru	N/A	Ipomoea batatas	01-Jul-2010	SPLCV-PER[PER:CAN1:10]
+KC253233.1	Sweet potato leaf curl virus	2829	Peru	N/A	Ipomoea batatas	01-Jul-2010	SPLCV-US[PER:AM1:10]
+KF769447.1	Sweet potato leaf curl Georgia virus	2786	China	30.3556 N 112.137 E	Ipomoea purpurea	10-Sep-2013	China:Hubei:2013
+KF836891.1	Sweet potato leaf curl Sao Paulo virus	2768	Tanzania	N/A	Ipomoea batatas	15-Dec-2012	TZ:SNG7:12
+JQ621844.1	Sweet potato leaf curl Sao Paulo virus-[ZA:WP:2011]	2769	South Africa	N/A	Ipomoea batatas	2011	PstI-012
+JQ621843.1	Sweet potato mosaic virus-[ZA:WP:2011]	2783	South Africa	N/A	Ipomoea batatas	2011	PstI-01
+KF716172.1	Sweet potato leaf curl virus	2829	Venezuela	N/A	Merremia dissecta	Nov-2009	[Venezuela:Sucre 1764:2009]
+KM050768.1	Sweet potato leaf curl virus	2830	India	N/A	sweet potato	17-Jul-2013	CTCRI TVM M1
+DI342811.1	unidentified unclassified sequences.	2823	Unknown	N/A	N/A	N/A	N/A
+DI342810.1	unidentified unclassified sequences.	2829	Unknown	N/A	N/A	N/A	N/A
+DI342809.1	unidentified unclassified sequences.	2790	Unknown	N/A	N/A	N/A	N/A
+DI342808.1	unidentified unclassified sequences.	2827	Unknown	N/A	N/A	N/A	N/A
+DI342807.1	unidentified unclassified sequences.	2828	Unknown	N/A	N/A	N/A	N/A
+DI342806.1	unidentified unclassified sequences.	2828	Unknown	N/A	N/A	N/A	N/A
+DI342805.1	unidentified unclassified sequences.	2837	Unknown	N/A	N/A	N/A	N/A
+DI342804.1	unidentified unclassified sequences.	2828	Unknown	N/A	N/A	N/A	N/A
+DI342803.1	unidentified unclassified sequences.	2828	Unknown	N/A	N/A	N/A	N/A
+DI342802.1	unidentified unclassified sequences.	2829	Unknown	N/A	N/A	N/A	N/A
+DI342801.1	unidentified unclassified sequences.	2829	Unknown	N/A	N/A	N/A	N/A
+FJ969837.1	Sweet potato leaf curl virus	2829	Brazil	N/A	Ipomoea batatas	N/A	RS2-[BR:Ros1]
+FJ969836.1	Sweet potato leaf curl virus	2829	Brazil	N/A	Ipomoea batatas	N/A	RS2-[BR:Poa1]
+FJ969835.1	Sweet potato leaf curl virus	2841	Brazil	N/A	Ipomoea batatas	N/A	RS2-[BR:Mac1]
+FJ969834.1	Sweet potato leaf curl virus	2829	Brazil	N/A	Ipomoea batatas	N/A	RS2-[BR:Est1]
+FJ969833.1	Sweet potato leaf curl virus	2845	Brazil	N/A	Ipomoea batatas	N/A	RS1-[BR:Tav1]
+FJ969832.1	Sweet potato leaf curl virus	2841	Brazil	N/A	Ipomoea batatas	N/A	CE-[BR:For1]
+KF697071.1	Sweet potato leaf curl virus	2804	Greece	N/A	Ipomoea indica	May-2013	[Greece:Rhodes 666:2013]
+KF697070.1	Sweet potato leaf curl virus	2830	Greece	N/A	Ipomoea indica	May-2013	[Greece:Crete 638-1:2013]
+KF697069.1	Sweet potato leaf curl virus	2830	Greece	N/A	Ipomoea indica	May-2013	[Greece:Crete 638:2013]
+DI183351.1	unidentified unclassified sequences.	2820	Unknown	N/A	N/A	N/A	N/A
+DI183338.1	unidentified unclassified sequences.	2828	Unknown	N/A	N/A	N/A	N/A
+DI174058.1	unidentified unclassified sequences.	2828	Unknown	N/A	N/A	N/A	N/A
+JX448368.1	Sweet potato leaf curl Georgia virus-[China: Hebei: 2011]	2785	China	N/A	Ipomoea batatas	Jun-2011	China: Hebei: 2011
+HQ393477.1	Sweet potato leaf curl Sao Paulo virus	2782	Brazil	22.00 S 51.27 W	Ipomoea batatas	2009	SPLCSPV-[BR:AlvM:09]
+HQ393476.1	Sweet potato leaf curl virus	2837	Brazil	21.53 S 51.20 W	Ipomoea batatas	2009	SPLCV-SP[BR:PP:09]
+HQ393475.1	Sweet potato leaf curl virus	2827	Brazil	21.53 S 51.20 W	Ipomoea batatas	2009	SPLCV-US[BR:AM4:09]
+HQ393474.1	Sweet potato leaf curl virus	2829	Brazil	21.59 S 51.25 W	Ipomoea batatas	2009	SPLCV-US[BR:AM3:09]
+HQ393473.1	Sweet potato leaf curl virus	2837	Brazil	22.00 S 51.27 W	Ipomoea batatas	2009	SPLCV-SP[BR:AlvM:09]
+HQ393472.1	Sweet potato leaf curl virus	2829	Brazil	21.59 S 51.25 W	Ipomoea batatas	2009	SPLCV-US[BR:AM2:09]
+HQ393471.1	Sweet potato leaf curl virus	2829	Brazil	21.59 S 51.25 W	Ipomoea batatas	2009	SPLCV-US[BR:AM1:09]
+HQ393470.1	Sweet potato leaf curl virus	2827	Brazil	30.17 S 51.38 W	Ipomoea batatas	2009	SPLCV-PE[BR:MP3:09]
+HQ393469.1	Sweet potato leaf curl virus	2827	Brazil	30.17 S 51.38 W	Ipomoea batatas	2009	SPLCV-PE[BR:MP7:09]
+HQ393468.1	Sweet potato leaf curl virus	2827	Brazil	30.21 S 51.28 W	Ipomoea batatas	2009	SPLCV-PE[BR:MP6:09]
+HQ393467.1	Sweet potato leaf curl virus	2828	Brazil	30.21 S 51.28 W	Ipomoea batatas	2009	SPLCV-PE[BR:MP5:09]
+HQ393466.1	Sweet potato leaf curl virus	2828	Brazil	31.21 S 51.35 W	Ipomoea batatas	2009	SPLCV-PE[BR:MP4:09]
+HQ393465.1	Sweet potato leaf curl virus	2829	Brazil	30.20 S 51.29 W	Ipomoea batatas	2009	SPLCV-PE[BR:MP2:09]
+HQ393464.1	Sweet potato leaf curl virus	2829	Brazil	30.20 S 51.29 W	Ipomoea batatas	2009	SPLCV-PE[BR:MP1:09]
+HQ393463.1	Sweet potato leaf curl virus	2828	Brazil	8.14 S 35.47 W	Ipomoea batatas	2009	SPLCV-PE[BR:Cau2:09]
+HQ393462.1	Sweet potato leaf curl virus	2828	Brazil	8.14 S 35.47 W	Ipomoea batatas	2009	SPLCV-PE[BR:Cau1:09]
+HQ393461.1	Sweet potato leaf curl virus	2829	Brazil	7.24 S 35.06 W	Ipomoea batatas	2009	SPLCV-PE[BR:PF:09]
+HQ393460.1	Sweet potato leaf curl virus	2828	Brazil	13.21 S 61.00 W	Ipomoea batatas	2008	SPLCV-PR[BR:Cac:08]
+HQ393458.1	Sweet potato leaf curl Spain virus	2818	Brazil	13.21 S 61.00 W	Ipomoea batatas	2008	SPLCESV-BA[BR:Cac:08]
+HQ393456.1	Sweet potato leaf curl virus	2829	Brazil	9.55 S 63.25 W	Ipomoea batatas	2008	SPLCV-PE[BR:PV:08]
+HQ393455.1	Sweet potato leaf curl virus	2828	Brazil	11.50 S 63.10 W	Ipomoea batatas	2008	SPLCV-PR[BR:OPO:08]
+HQ393453.1	Sweet potato leaf curl virus	2829	Brazil	11.50 S 63.10 W	Ipomoea batatas	2008	SPLCV-US[BR:OPO:08]
+HQ393451.1	Sweet potato leaf curl virus	2829	Brazil	7.21 S 46.37 W	Ipomoea batatas	2008	SPLCV-US[BR:PV:08]
+HQ393450.1	Sweet potato leaf curl virus	2829	Brazil	7.04 S 51.23 W	Ipomoea batatas	2008	SPLCV-US[BR:PA:08]
+HQ393449.1	Sweet potato leaf curl virus	2828	Brazil	7.21 S 46.37 W	Ipomoea batatas	2008	SPLCV-PR[BR:Ria:08]
+HQ393448.1	Sweet potato leaf curl Spain virus	2779	Brazil	12.04 S 41.05 W	Ipomoea batatas	2008	SPLCESV-BA[BR:Uti:08]
+HQ393446.1	Sweet potato leaf curl virus	2829	Brazil	12.41 S 39.06 W	Ipomoea batatas	2008	SPLCV-US[BR:CA2:08]
+HQ393445.1	Sweet potato leaf curl virus	2828	Brazil	12.41 S 39.06 W	Ipomoea batatas	2008	SPLCV-PR[BR:CA:08]
+HQ393443.1	Sweet potato leaf curl virus	2829	Brazil	12.41 S 39.06 W	Ipomoea batatas	2008	SPLCV-US[BR:CA1:08]
+HQ393442.1	Sweet potato leaf curl virus	2827	Brazil	14.35 S 39.17 W	Ipomoea batatas	2008	SPLCV-PR[BR:Uru:08]
+JX961674.1	Sweet potato leaf curl virus	2788	South Korea	N/A	Ipomoea batatas	2011	Muan-GE31
+JX961673.1	Sweet potato leaf curl virus	2787	South Korea	N/A	Ipomoea batatas	2011	Muan-GE21
+JX961672.1	Sweet potato leaf curl virus	2828	South Korea	N/A	Ipomoea batatas	2011	Jido-20
+JX961671.1	Sweet potato leaf curl virus	2788	South Korea	N/A	Ipomoea batatas	2011	Gogumdo-25
+JX961670.1	Sweet potato leaf curl virus	2829	South Korea	N/A	Ipomoea batatas	2011	GE31
+HM754641.1	Sweet potato leaf curl virus	2828	South Korea	N/A	N/A	N/A	Haenam 1
+HM754640.1	Sweet potato leaf curl virus	2829	South Korea	N/A	N/A	N/A	Haenam 618-2
+HM754639.1	Sweet potato leaf curl virus	2829	South Korea	N/A	N/A	N/A	Haenam 532
+HM754638.1	Sweet potato leaf curl virus	2829	South Korea	N/A	N/A	N/A	Haenam 519-3
+HM754637.1	Sweet potato leaf curl virus	2828	South Korea	N/A	N/A	N/A	Yeojoo 507
+HM754636.1	Sweet potato leaf curl virus	2829	South Korea	N/A	N/A	N/A	Nonsan 445-2
+HM754635.1	Sweet potato leaf curl virus	2829	South Korea	N/A	N/A	N/A	Yeojoo 388
+HM754634.1	Sweet potato leaf curl virus	2829	South Korea	N/A	N/A	N/A	Chungju 263
+JQ349087.1	Sweet potato leaf curl virus	2828	Argentina	N/A	sweet potato cultivar Okinawa	2010	Bella Vista
+JX286655.1	Sweet potato leaf curl virus	2828	China	N/A	sweet potato	26-May-2012	XN01
+JX286654.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	14-May-2012	GZ02
+JX286653.1	Sweet potato leaf curl virus	2829	China	N/A	sweet potato	14-May-2012	GZ01
+JX050197.1	Sweet potato leaf curl virus	2801	India	N/A	Ipomoea purpurea (wild morning glory)	18-Aug-2009	SPLCV-ILC:Del
+JX050196.1	Sweet potato leaf curl virus	2801	India	N/A	Ipomoea purpurea (wild morning glory)	10-Jul-2010	SPLCV-IYV-2:Del
+JX050195.1	Sweet potato leaf curl virus	2801	India	N/A	Ipomoea purpurea (wild morning glory)	18-Aug-2009	SPLCV-IYV-1:Del
+JF736657.1	Sweet potato leaf curl China virus	2790	China	N/A	sweet potato	20-Apr-2010	SPLCCNV-ZJ
+FJ176701.1	Sweet potato leaf curl virus-Jiangsu	2828	China	N/A	sweet potato	15-Jun-2008	SPLCV-JS
+JF768740.1	Sweet potato leaf curl virus	2827	China	N/A	Ipomoea indica	18-Aug-2010	MG
+HQ333144.1	Sweet potato leaf curl South Carolina virus	2782	USA	N/A	Ipomoea batatas	2006	US:SC:648B-9
+HQ333143.1	Sweet potato golden vein associated virus	2824	USA	N/A	Ipomoea batatas	2007	US:MS:1B-3
+HQ333142.1	Sweet potato leaf curl virus	2828	USA	N/A	Ipomoea setosa	2007	US:MS:WS3-8
+HQ333141.1	Sweet potato leaf curl virus	2829	USA	N/A	Ipomoea setosa	2007	US:MS:WS1-4
+HQ333140.1	Sweet potato leaf curl virus	2827	USA	N/A	Ipomoea batatas	2007	US:MS:4B-14
+HQ333139.1	Sweet potato leaf curl virus	2827	USA	N/A	Ipomoea batatas	2007	US:MS:1B-1a
+HQ333138.1	Sweet potato leaf curl virus	2795	USA	N/A	Ipomoea batatas	2006	US:SC:646B-11
+HQ333137.1	Sweet potato leaf curl virus	2797	USA	N/A	Ipomoea batatas	2006	US:SC:634-7
+HQ333136.1	Sweet potato leaf curl virus	2797	USA	N/A	Ipomoea batatas	2006	US:SC:634-2
+HQ333135.1	Sweet potato leaf curl virus	2795	USA	N/A	Ipomoea batatas	2006	US:SC:377-23
+EU309693.1	Sweet potato leaf curl virus	2835	China	N/A	N/A	N/A	N/A
+EF456746.2	Sweet potato leaf curl Lanzarote virus	2814	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG27:02
+EF456745.2	Sweet potato leaf curl Canary virus	2807	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG7:02
+EF456744.2	Sweet potato leaf curl virus-Spain	2829	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG6:02
+EF456743.2	Sweet potato leaf curl Spain virus	2779	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG5:02
+EF456742.3	Sweet potato leaf curl Canary virus	2806	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG4:02
+EF456741.2	Sweet potato leaf curl Spain virus	2780	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG1:02
+EU839579.2	Sweet potato leaf curl Lanzarote virus	2814	Spain	N/A	Ipomoea batatas	Sep-2006	ES:MAL:BG30:06
+EU839578.2	Ipomoea yellow vein virus	2783	Spain	N/A	Ipomoea indica	Jun-2006	ES:MAL:IG5:06
+EU839577.2	Ipomoea yellow vein virus	2783	Spain	N/A	Ipomoea indica	Jun-2006	ES:MAL:IG3:06
+EU839576.2	Ipomoea yellow vein virus	2791	Spain	N/A	Ipomoea indica	Jun-2006	ES:Mal:IG1:06
+EU856366.2	Sweet potato leaf curl virus-Spain	2828	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG13:02
+EU856365.2	Sweet potato leaf curl Canary virus	2807	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG21:02
+EU856364.2	Sweet potato leaf curl virus-Spain	2829	Spain	N/A	Ipomoea batatas	N/A	ES:CI:BG12:02
+FJ151200.2	Sweet potato leaf curl Spain virus	2781	Spain	N/A	Ipomoea indica	Jun-2006	ES:Mal:IG2:06
+FJ529203.1	Sweet potato leaf curl Canary virus	2807	Spain	N/A	Ipomoea batatas	2002	ES:CI:BG25:02
+FJ515896.1	Sweet potato leaf curl virus	2828	China	N/A	Ipomoea purpurea (L.) Roth	Dec-2007	F-p1
+FN806776.1	Sweet potato leaf curl virus	2801	China	24 N 97.5 E	N/A	17-Aug-2008	Y338
+FN432356.2	Sweet potato leaf curl Bengal virus - [India:West Bengal:2008]	2823	India	N/A	Ipomoea batatas	N/A	SPLCV-BCKV-India
+EU267799.1	Sweet potato leaf curl virus	2799	China	N/A	N/A	N/A	RL7
+DQ644563.1	Sweet potato leaf curl virus	2828	Puerto Rico	N/A	N/A	N/A	Merremia N4
+DQ644562.1	Sweet potato leaf curl virus	2828	Puerto Rico	N/A	N/A	N/A	PR80-N2
+DQ644561.1	Merremia leaf curl virus	2802	Puerto Rico	N/A	N/A	N/A	Merremia N1
+FJ560719.1	Sweet potato leaf curl Korean virus	2828	South Korea	N/A	Ipomoea batatas (sweet potato)	30-Sep-2003	J-508
+FJ515898.1	Sweet potato leaf curl virus	2828	China	N/A	Ipomoea purpurea (L.) Roth	Dec-2007	F-p3
+FJ515897.1	Sweet potato leaf curl virus	2828	China	N/A	Ipomoea purpurea (L.) Roth	Dec-2007	F-p2
+AB433788.1	Sweet potato leaf curl virus	2828	Japan	N/A	N/A	1998	N/A
+AB433787.1	Sweet potato leaf curl virus	2829	Japan	N/A	N/A	1998	N/A
+AB433786.1	Sweet potato leaf curl virus	2844	Japan	N/A	N/A	1996	N/A
+AJ586885.2	Sweet potato leaf curl virus	2830	Italy	N/A	Ipomoea indica	N/A	N/A
+EU253456.1	Sweet potato leaf curl virus	2800	China	N/A	Ipomoea purpurea	N/A	RL31
+AJ132548.1	Sweet potato leaf curl virus	2763	Unknown	N/A	Ipomoea indica	N/A	N/A
