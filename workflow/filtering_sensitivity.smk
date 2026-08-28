@@ -1,0 +1,63 @@
+"""Compare completed medoid and NC_004650.1 reference filtering arms."""
+
+
+MEDOID_RUN = "splcv_refiltered_medoid_deterministic_v2"
+REFERENCE_RUN = "splcv_refiltered_reference_NC004650_deterministic_v2"
+OUTPUT_DIR = "results/sensitivity_medoid_vs_NC004650_deterministic_v2"
+
+
+rule all:
+    input:
+        f"{OUTPUT_DIR}/filtering_comparison_summary.tsv",
+        f"{OUTPUT_DIR}/sequence_filtering_comparison.tsv",
+        f"{OUTPUT_DIR}/discordant_accessions.tsv",
+        f"{OUTPUT_DIR}/filtering_strategy_comparison.png",
+        f"{OUTPUT_DIR}/filtering_strategy_comparison.pdf",
+
+
+rule compare_filtering_strategies:
+    input:
+        medoid=(
+            f"results/{MEDOID_RUN}/qc/"
+            "distance_filter_decisions.tsv"
+        ),
+        reference=(
+            f"results/{REFERENCE_RUN}/qc/"
+            "distance_filter_decisions.tsv"
+        ),
+        script="scripts/compare_filtering_strategies.py",
+    output:
+        summary=f"{OUTPUT_DIR}/filtering_comparison_summary.tsv",
+        sequences=f"{OUTPUT_DIR}/sequence_filtering_comparison.tsv",
+        discordant=f"{OUTPUT_DIR}/discordant_accessions.tsv",
+        png=f"{OUTPUT_DIR}/filtering_strategy_comparison.png",
+        pdf=f"{OUTPUT_DIR}/filtering_strategy_comparison.pdf",
+    log:
+        f"{OUTPUT_DIR}/compare_filtering_strategies.log",
+    conda:
+        "../envs/recombination_core.yaml"
+    params:
+        outdir=OUTPUT_DIR,
+        reference_accession="NC_004650.1",
+        threshold=0.25,
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p "{params.outdir}"
+        export MPLCONFIGDIR="${{TMPDIR:-/tmp}}/matplotlib-vipan-sensitivity"
+
+        python "{input.script}" \
+            --medoid "{input.medoid}" \
+            --reference "{input.reference}" \
+            --reference-accession "{params.reference_accession}" \
+            --medoid-threshold {params.threshold} \
+            --reference-threshold {params.threshold} \
+            --output-dir "{params.outdir}" \
+            --formats png,pdf \
+            > "{log}" 2>&1
+
+        test -s "{output.summary}"
+        test -s "{output.sequences}"
+        test -s "{output.png}"
+        test -s "{output.pdf}"
+        """
