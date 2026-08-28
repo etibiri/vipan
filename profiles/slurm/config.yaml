@@ -1,0 +1,10 @@
+executor: slurm
+jobs: 50
+latency-wait: 60
+use-conda: true
+printshellcmds: true
+rerun-incomplete: true
+keep-going: true
+default-resources:
+  mem_mb: 4000
+  runtime: 120
