@@ -1,0 +1,13 @@
+name: vipan-recombination-core
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - python=3.12
+  - biopython=1.88
+  - mafft>=7.526
+  - matplotlib>=3.9
+  - numpy>=2.0
+  - pandas>=2.2
+  - scipy>=1.13
