@@ -1,0 +1,26 @@
+event_id	segment	recombinant_group	minor_parent_group	major_parent_group	ref_accession	begin_ref	end_ref	wraps_origin	breakpoints_from_rdp	methods_reported	p_reported	scorable	source	note
+A01	A	EACMV-UG	ACMV	EACMV	JF909063.1	545	1008	no	yes	RGBMCST	1.2e-71	yes	deBruyn2012_T1	core CP region; founding cassava recombination event, first described on identity grounds by Zhou et al. 1997
+A02	A	EACMCV	Unknown	EACMV	JF909063.1	1052	1872	no	yes	RGBMCST	1.3e-89	yes	deBruyn2012_T1	
+A03	A	EACMKV|EACMZV|SACMV	ToLCV-like	EACMV	JF909063.1	1835	9	yes	yes	RGBMCST	6.7e-53	yes	deBruyn2012_T1	spans the origin of replication
+A04	A	EACMV-KE	EACMZV	EACMV	JF909063.1	1878	2083	no	partial	RGBMCST	1.4e-24	yes	deBruyn2012_T1	begin not inferred by RDP
+A05	A	EACMMV|SACMV	ToLCV/TYLCV-like	EACMV	JF909063.1	178	999	no	partial	RGBMCST	4.9e-20	yes	deBruyn2012_T1	end not inferred by RDP
+A06	A	EACMMV	EACMKV	EACMV	JF909063.1	1843	2311	no	partial	RGBMCST	6.0e-15	yes	deBruyn2012_T1	begin not inferred by RDP
+A07	A	EACMZV	EACMKV	Unknown	JF909063.1	1840	2184	no	partial	RGBMCST	6.7e-22	yes	deBruyn2012_T1	begin not inferred by RDP
+A08	A	EACMV|EACMMV	Unknown	Unknown	JF909063.1	2052	2360	no	partial	RGBMCST	7.2e-16	yes	deBruyn2012_T1	begin not inferred by RDP
+A09	A	EACMV	ACMV	EACMV	JF909063.1	1821	1935	no	yes	RGBs	1.0e-10	yes	deBruyn2012_T1	three methods only, one below the corrected threshold
+A10	A	EACMKV|SACMV	EACMV-like	Unknown	JF909063.1	2625	2742	no	partial	RGBMCS	1.3e-11	yes	deBruyn2012_T1	end not inferred by RDP
+A11	A	ACMV	EACMV	ACMV	JF909063.1	1788	1856	no	yes	RgB	3.3e-5	yes	deBruyn2012_T1	weak support in the source
+A12	A	ToLCCV	EACMV	ToLCCV	JF909063.1	2591	2646	no	yes	RgBS	9.1e-5	no	deBruyn2012_T1	recombinant is a tomato virus, outside a cassava-only dataset
+A13	A	EACMV-like	Unknown	Unknown	JF909063.1	190	451	no	yes	rBcS	5.7e-12	yes	deBruyn2012_T1	recombinant group defined broadly in the source
+A14	A	EACMCV	EACMCV	Unknown	JF909063.1	1056	1126	no	partial	rgBS	6.0e-5	yes	deBruyn2012_T1	begin not inferred by RDP; weak support in the source
+A15	A	EACMV	Unknown	EACMV	JF909063.1	2662	2684	no	yes	Rgb	3.7e-2	yes	deBruyn2012_T1	22 nt region, weak support in the source
+A16	A	ACMBFV	ToLCCMV	ACMV	NC_055128.1	1728	26	yes	yes	RGBMCST	NA	yes	Tiendrebeogo2012	recombinant portion covering 90 percent of Rep, AC4 and the intergenic region; coordinates given relative to isolate BF:Oua:BF127:08, i.e. HE616777.1, kept in the dataset under its identical RefSeq copy NC_055128.1
+B01	B	CMMGV	Unknown	EACMV-like	JF909200.1	1564	2688	no	yes	RGBMCST	1.6e-78	yes	deBruyn2012_T1	
+B02	B	EACMV-[SC]	EACMCV-like	EACMV-like	JF909200.1	1124	1454	no	yes	RGBMCST	5.8e-21	yes	deBruyn2012_T1	coordinate reference stated explicitly in the text for this event
+B03	B	EACMV-like	EACMV-like	EACMV-like	JF909200.1	2461	2704	no	yes	RGBMCST	3.3e-12	no	deBruyn2012_T1	recombinant and both parents are the same broad group, no identifiable recombinant accession
+B04	B	EACMV-like	Unknown	EACMV-like	JF909200.1	2672	5	yes	yes	RGBMCST	5.6e-13	no	deBruyn2012_T1	recombinant group too broad to attribute
+B05	B	EACMCV	EACMV-[SC]-like	Unknown	JF909200.1	1496	2503	no	yes	RGBMC	2.2e-9	yes	deBruyn2012_T1	
+B06	B	EACMV-like	EACMV-like	EACMV-like	JF909200.1	2612	37	yes	yes	RGBMCS	1.3e-11	no	deBruyn2012_T1	recombinant group too broad to attribute
+B07	B	EACMV-like	Unknown	EACMV-like	JF909200.1	422	1647	no	yes	RMCST	1.3e-6	no	deBruyn2012_T1	recombinant group too broad to attribute
+B08	B	EACMV-[AJ:Bam:AJ29AQ1:2009]	Unknown	EACMV-like	JF909200.1	723	1143	no	yes	RGBMCSt	3.2e-6	yes	deBruyn2012_T1	text restricts this event to accession JF909211
+B09	B	EACMV-like	EACMV-like	EACMV-like	JF909200.1	1718	2751	no	yes	BMCST	1.7e-15	no	deBruyn2012_T1	recombinant group too broad to attribute

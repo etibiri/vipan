@@ -1,0 +1,17 @@
+diff --git a/openrdp/maxchi.py b/openrdp/maxchi.py
+index ca21f3e..a3e4f29 100644
+--- a/openrdp/maxchi.py
++++ b/openrdp/maxchi.py
+@@ -260,6 +260,12 @@ class MaxChi:
+                     right -= 1
+ 
+             # 3, determine if left or right side of the new window is the best
++            # The 'expand' move above increments `right` without testing it against the number of
++            # scanned positions, so a window that reaches the end of the alignment indexes one past
++            # the last site and raises IndexError. Clamp both edges to the alignment.
++            n_positions = len(chi2_values[best[0]])
++            left = max(0, min(left, n_positions - 1))
++            right = max(0, min(right, n_positions - 1))
+             left_peak = chi2_values[best[0]][left]
+             right_peak = chi2_values[best[0]][right]
+             midpoint = left - (left - right)//2

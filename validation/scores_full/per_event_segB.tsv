@@ -1,0 +1,9 @@
+segment	tool	event_id	recombinant_group	group_size	truth_begin	truth_end	n_calls_on_group	flagged	localised	best_jaccard	call_begin	call_end	err_begin	err_end	parents_ok	best_p	localised_by_chance	p_empirical
+B	3SEQ	B01	CMMGV	1	1780	3193	1	True	True	0.598	1848	2692	68	501		1.002677e-06	0.39	0.215
+B	3SEQ	B02	EACMV-[SC]	2	1317	1670	2	True	False	0.128	1426	3236				2.181106e-70	0.0	0.78
+B	3SEQ	B05	EACMCV	8	1712	2875	8	True	True	0.857	1800	2796	88	79		3.417079e-10	1.0	0.04
+B	3SEQ	B08	EACMV-[AJ:Bam:AJ29AQ1:2009]	1	886	1336	1	True	False	0.254	10	1782				4.651102e-84	0.0	0.395
+B	GENECONV	B01	CMMGV	1	1780	3193	48	True	False	0.012	627	1811				0.0	1.0	1.0
+B	GENECONV	B02	EACMV-[SC]	2	1317	1670	51	True	False	0.115	1454	3197				0.0	1.0	1.0
+B	GENECONV	B05	EACMCV	8	1712	2875	384	True	True	0.849	1805	2792	93	83		0.0	1.0	0.985
+B	GENECONV	B08	EACMV-[AJ:Bam:AJ29AQ1:2009]	1	886	1336	11	True	False	0.278	166	1787				0.0	0.97	0.98

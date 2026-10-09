@@ -1,0 +1,10 @@
+event_id	segment	ref_accession	strand	rotation_offset	begin_ref	end_ref	begin_col	end_col	wraps_origin	projection
+B01	B	JF909200.1	+	2757	1564	2688	1780	3193	no	exact
+B02	B	JF909200.1	+	2757	1124	1454	1317	1670	no	exact
+B03	B	JF909200.1	+	2757	2461	2704	2777	3209	no	exact
+B04	B	JF909200.1	+	2757	2672	5	3175	12	yes	exact
+B05	B	JF909200.1	+	2757	1496	2503	1712	2875	no	exact
+B06	B	JF909200.1	+	2757	2612	37	3079	45	yes	exact
+B07	B	JF909200.1	+	2757	422	1647	530	1868	no	exact
+B08	B	JF909200.1	+	2757	723	1143	886	1336	no	exact
+B09	B	JF909200.1	+	2757	1718	2751	1957	3286	no	exact

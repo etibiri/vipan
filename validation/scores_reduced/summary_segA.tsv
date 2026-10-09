@@ -1,0 +1,7 @@
+segment	tool	n_events	flagged	flagged_pct	localised	localised_pct	localised_expected_by_chance	events_better_than_chance	median_p_empirical	parents_ok	parents_scored	median_err_begin	median_err_end	n_calls	n_calls_unmatched
+A	3SEQ	15	15	100.0	3	20.0	4.32	2	0.95	0	5	52	114	45	25
+A	BootScan	15	15	100.0	14	93.3	15.0	0	1.0	0	0	8	8	44460	24460
+A	CONCORDANCE2	15	15	100.0	13	86.7	14.22	1	0.41	0	0	22	16	826	505
+A	CONCORDANCE3	15	15	100.0	9	60.0	9.63	2	0.65	0	0	39	38	166	79
+A	GENECONV	15	15	100.0	6	40.0	10.0	1	1.0	0	0	60	242	561	412
+A	RDP	15	15	100.0	15	100.0	15.0	1	0.995	0	0	17	15	26219	16887

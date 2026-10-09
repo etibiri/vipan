@@ -249,6 +249,18 @@ tagged GitHub release — see `zenodo_release/.zenodo.json`).
 
 See `LICENSE`.
 
+## 11b. Cassava validation set (this branch)
+
+This branch adds an empirical validation arm alongside the sweepovirus case study: cassava mosaic
+begomoviruses, whose recombination events are described in the literature, used to measure what the
+detectors and the event-level concordance layer recover on real genomes. See
+[`validation/README.md`](validation/README.md) for results, the truth table and its caveats, and
+`benchmark/` for the simulation arm. Short version: every method flags 100 % of the published events,
+no single detector localises them better than a random-placement control of matched call volume, and
+requiring three detectors to agree cuts the call count by two orders of magnitude at a higher
+coincidence rate. The same work documents three defects that stop OpenRDP from replacing RDP4 as it
+stands.
+
 ## 12. A note on nomenclature
 
 RDP**4** was the software actually used for recombination

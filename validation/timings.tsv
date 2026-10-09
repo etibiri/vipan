@@ -1,0 +1,24 @@
+method	segment	n_sequences	seconds	status	note
+3SEQ	A	120	18.7	ok	natif
+3SEQ	B	120	22.2	ok	natif
+GENECONV	A	120	359.1	ok	natif
+GENECONV	B	120	479.3	ok	natif
+3SEQ	A	45	1.3	ok	natif
+GENECONV	A	45	116.7	ok	natif
+3SEQ	B	45	1.6	ok	natif
+GENECONV	B	45	118.6	ok	natif
+RDP	A	45	537.4	ok	OpenRDP Python
+RDP	B	45	575.4	ok	OpenRDP Python
+BootScan	A	45	1995.4	ok	OpenRDP Python
+BootScan	B	45	2210.3	ok	OpenRDP Python
+MaxChi	A	45	NA	failed	IndexError openrdp/maxchi.py:264 puis, apres correction, ValueError chi2_contingency
+MaxChi	B	45	NA	failed	idem segment A
+Chimaera	A	45	NA	failed	ZeroDivisionError openrdp/chimaera.py:238
+Chimaera	B	45	NA	failed	idem segment A
+SiScan	A	45	>7200	not_finished	interrompu apres 2 h
+SiScan	B	45	>7200	not_finished	interrompu apres 2 h
+RDP	A	30	84.6	ok	OpenRDP Python, sonde
+BootScan	A	30	447.3	ok	OpenRDP Python, sonde
+MaxChi	A	30	1188.2	ok	OpenRDP Python, sonde ; echoue a 45 sequences
+Chimaera	A	30	608.6	ok	OpenRDP Python, sonde ; echoue a 45 sequences
+SiScan	A	30	>1800	not_finished	OpenRDP Python, sonde, interrompu

@@ -1,0 +1,3 @@
+segment	tool	n_events	flagged	flagged_pct	localised	localised_pct	localised_expected_by_chance	events_better_than_chance	median_p_empirical	parents_ok	parents_scored	median_err_begin	median_err_end	n_calls	n_calls_unmatched
+A	3SEQ	15	15	100.0	7	46.7	7.66	0	0.625	0	5	76	266	120	70
+A	GENECONV	15	15	100.0	6	40.0	12.4	0	1.0	0	0	194	242	2000	1522
